@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Layers, GraduationCap, ChevronRight, LayoutGrid, Info } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import api from '@/lib/axios';
 
 export default function SubCategoryPage() {
   const params = useParams();
@@ -15,8 +16,8 @@ export default function SubCategoryPage() {
   useEffect(() => {
     const fetchSubCategories = async () => {
       try {
-        const res = await fetch(`http://localhost:5002/api/v1/sub-categories/category/${params.id}`);
-        const result = await res.json();
+        const res = await api.get(`/sub-categories/category/${params.id}`);
+        const result = await res.data;
         if (result.success) setData(result.data);
       } catch (err) {
         console.error("Failed to fetch sub-categories", err);

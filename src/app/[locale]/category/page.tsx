@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LayoutGrid, Sparkles, BookOpen } from "lucide-react";
 import { CategoryCard } from "@/components/card/CategoryCard";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import api from "@/lib/axios";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -15,8 +16,8 @@ export default function CategoryPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://localhost:5002/api/v1/categories");
-        const data = await res.json();
+        const res = await api.get("/categories");
+        const data = await res.data;
         if (data.success) setCategories(data.data);
       } catch (err) {
         console.error("Failed to fetch categories", err);

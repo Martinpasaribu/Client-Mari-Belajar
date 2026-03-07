@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import api from '@/lib/axios';
 
 interface IBab {
   _id: string;
@@ -19,8 +20,8 @@ export default function BabListPage() {
 
   const fetchAllBab = async () => {
     try {
-      const response = await fetch('http://localhost:5002/api/v1/bab');
-      const res = await response.json();
+      const response = await api.get('bab');
+      const res = await response.data;
       setListBab(Array.isArray(res) ? res : res.data || []);
     } catch (error) {
       console.error('Error fetching bab:', error);
