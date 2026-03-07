@@ -1,5 +1,5 @@
-import { notFound } from "next/navigation";
 import { getCourseBySlug } from "@/lib/db";
+import { notFound } from "next/navigation";
 
 /* =========================
    METADATA FUNCTION
