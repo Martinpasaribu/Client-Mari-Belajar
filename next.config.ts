@@ -1,8 +1,13 @@
-import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
 
-const nextConfig: NextConfig = {
-  /* config options here */
-  reactCompiler: true,
+const withNextIntl = createNextIntlPlugin();
+
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Matikan fitur yang bikin error critters tadi
+  experimental: {
+    optimizeCss: false 
+  }
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

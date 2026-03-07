@@ -1,0 +1,19 @@
+{
+  
+  "Metadata": {
+    "title": "Learn With Us App",
+    "description": "Modern education platform"
+  },
+  
+  "Navbar": {
+    "categories": "Categories",
+    "history": "History",
+    "login": "Login",
+    "register": "Register"
+  },
+  
+  "Home": {
+    "title": "LET'S LEARN",
+    "subtitle": "Modern education platform for the future."
+  }
+}

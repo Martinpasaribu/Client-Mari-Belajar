@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* 1. Tambahkan path folder komponen kamu di sini */
+@source "../components"; 
+@source "../modules"; 
+
+@theme {
+
+  /* light */
+
+  --color-primary-1: #00BD9D;
+  --color-primary-2: #1A2CA3;
+  
+  
+  --color-bg1: #FFFBFA;
+  --color-bg2: #fafafa;
+
+  /* dark */
+
+  --color-dark-primary1: #1F7D53;
+  --color-dark-primary-2: #2845D6;
+  --color-dark-bg1: #080705;
+  --color-dark-bg2: #18181b;
+
+  --color-foreground: #0f172a;
+}
+
+@variant dark (&:where(.dark, .dark *));
+
+/* globals.css */
+@layer base {
+  :root {
+    --color-bg2: #fafafa;
+  }
+  
+  .dark {
+    --color-bg2: #080705; /* Sesuaikan dengan dark-bg1 kamu */
+  }
+
+  html {
+    /* Pastikan background html langsung mengikuti variabel */
+    background-color: var(--color-bg2);
+  }
+
+  body {
+    background-color: var(--color-bg2);
+    @apply transition-colors duration-300 ease-in-out;
+  }
+}
+
+/* Mencegah animasi saat awal load agar tidak berkedip */
+.preload * {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -ms-transition: none !important;
+  -o-transition: none !important;
+}

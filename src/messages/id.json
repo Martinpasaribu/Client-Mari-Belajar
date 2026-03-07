@@ -1,0 +1,17 @@
+{
+  "Metadata": {
+    "title": "app App",
+    "description": "Platform edukasi modern Indonesia"
+  },
+  
+  "Navbar": {
+    "categories": "Kategori",
+    "history": "Riwayat",
+    "login": "Masuk",
+    "register": "Daftar"
+  },
+  "Home": {
+    "title": "app",
+    "subtitle": "Platform edukasi modern untuk masa depan."
+  }
+}
