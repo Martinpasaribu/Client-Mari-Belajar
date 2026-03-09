@@ -33,7 +33,7 @@ export default function DashboardPage() {
         const resEnroll = await api.get('/enrollments/my-modules/all');
         setEnrollments(resEnroll.data);
 
-        const resCatalogs = await api.get('/catalogs'); 
+        const resCatalogs = await api.get('/dashboard/catalogs'); 
         const enrolledIds = resEnroll.data.map((e: any) => e.sub_category_key?._id);
         const notOwned = resCatalogs.data.data.filter((c: any) => !enrolledIds.includes(c._id));
         

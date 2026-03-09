@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import SidebarDashboard from "./SidebarDashboard";
+import Footer from "./Footer";
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -31,6 +32,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
           <main className="flex-1 overflow-y-auto p-4 md:p-8">
             {children}
           </main>
+          {/* <Footer/> */}
         </div>
       </div>
     );
@@ -41,6 +43,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     <>
       <Navbar variant="guest" />
       <main>{children}</main>
+      <Footer/>
       {/* <Footer /> Tambahkan jika ada */}
     </>
   );

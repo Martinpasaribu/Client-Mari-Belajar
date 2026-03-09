@@ -64,8 +64,8 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
             {!isDashboard ? (
               <Link href="/" className="flex justify-center items-center transition-opacity hover:opacity-80">
                 <AppIcon 
-                  size={80} 
-                  className="rounded-full" 
+                  size={100} 
+                  className="" 
                 />
               </Link>
             ) : (

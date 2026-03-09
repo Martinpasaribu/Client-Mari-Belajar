@@ -86,7 +86,7 @@ const stats = [
     <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 text-zinc-900 dark:text-zinc-100 selection:bg-primary-1 selection:text-white transition-colors duration-300">
       
       {/* HERO SECTION */}
-      <section className="pt-32 pb-20 px-6 relative overflow-hidden">
+      <section className="pt-2 md:pt-32 md:pb-20 px-6 relative overflow-hidden min-h-[100hv]">
         <FadeInContainer className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
           <FadeInItem>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-1/10 border border-primary-1/20 text-primary-1 text-xs font-black uppercase tracking-widest">
@@ -302,9 +302,6 @@ const stats = [
         </FadeInContainer>
       </section>
       
-      <footer className="py-12 bg-bg1 dark:bg-dark-bg1 border-t border-slate-200 dark:border-slate-800 text-center">
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">&copy; 2026 Mari Belajar - Aplikasi Bank Soal No. 1</p>
-      </footer>
     </div>
   );
 }
