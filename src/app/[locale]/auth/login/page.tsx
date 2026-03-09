@@ -112,7 +112,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="relative my-8">
+        <div className="relative my-3 md:my-6">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-slate-100 dark:border-slate-800"></span>
           </div>

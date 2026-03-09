@@ -25,6 +25,10 @@ export default function RegisterPage() {
     }
   };
 
+  const loginGoogle = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+  };
+  
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 transition-colors">
       <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-8 shadow-xl border border-slate-100 dark:border-slate-800">
@@ -97,7 +101,28 @@ export default function RegisterPage() {
               </span>
             ) : 'Buat Akun Sekarang'}
           </button>
+
         </form>
+
+                
+                        
+        <div className="relative my-3 md:my-6">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-100 dark:border-slate-800"></span>
+          </div>
+          <div className="relative flex justify-center text-[10px] uppercase">
+            <span className="bg-white dark:bg-slate-900 px-3 text-slate-400 font-black tracking-widest">Atau</span>
+          </div>
+        </div>
+
+        <button
+          onClick={loginGoogle}
+          type="button"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98]"
+        >
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="h-5 w-5" alt="G" />
+          <span>Daftar dengan Google</span>
+        </button>
 
         <p className="mt-8 text-center text-sm font-medium text-slate-600 dark:text-slate-400">
           Sudah punya akun?{' '}

@@ -43,7 +43,7 @@ export default function AppIcon({
           // agar tidak "meledak" atau melebihi elemen induk/navbar.
           width: isCircle ? '45px' : 'auto', 
           height: '60px', 
-          minWidth: isCircle ? '115px' : '120px',
+          minWidth: isCircle ? '65px' : '120px',
           aspectRatio: isCircle ? '1/1' : 'auto' 
         }}
       >
