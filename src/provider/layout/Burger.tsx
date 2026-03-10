@@ -47,6 +47,9 @@ export default function MobileMenu({
             </button>
           </div>
 
+          {/* Nav Links */}
+          <div className="flex-1 space-y-4 overflow-y-auto">
+
 
             {user && (
               <>
@@ -71,9 +74,7 @@ export default function MobileMenu({
                 </button>
               </>
             )}
-
-          {/* Nav Links */}
-          <div className="flex-1 space-y-4 overflow-y-auto">
+            
             {!user && (
               <div className="grid grid-cols-1 gap-4 mb-8">
                 <Link
@@ -93,9 +94,8 @@ export default function MobileMenu({
               </div>
             )}
 
-
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-4 mb-2">
-               Main Menu
+              Main Menu
             </p>
 
   
