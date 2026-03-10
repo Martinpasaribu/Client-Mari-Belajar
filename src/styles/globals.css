@@ -4,6 +4,9 @@
 @source "../components"; 
 @source "../modules"; 
 
+@variant dark (&:where(.dark, .dark *));
+
+
 @theme {
 
   /* light */
@@ -25,7 +28,6 @@
   --color-foreground: #0f172a;
 }
 
-@variant dark (&:where(.dark, .dark *));
 
 /* globals.css */
 @layer base {

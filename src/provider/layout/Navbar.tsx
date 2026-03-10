@@ -1,23 +1,21 @@
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable react-hooks/static-components */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useTheme } from "next-themes";
-import { Sun, Moon, LogOut, Bell, Monitor, ChevronDown, LayoutDashboard, User, Menu } from "lucide-react";
+import { Sun, Moon, LogOut, ChevronDown, LayoutDashboard, User, Menu, Settings, ShieldCheck, Monitor } from "lucide-react";
 import Link from 'next/link';
 import LanguageSwitcher from "../tools/LanguageSwitcher";
 import Cookies from 'js-cookie';
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 import AppIcon from "../tools/AppIcon";
-import { FadeInDown, FadeInContainer, FadeInItem, SlideInRight } from "@/components/animations/MotionWrapper";
+import { FadeInDown } from "@/components/animations/MotionWrapper";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./Burger";
 
 export default function Navbar({ variant = "guest" }: { variant?: "guest" | "dashboard" }) {
-  const { theme, setTheme } = useTheme();
   const { user, logout } = useAuthStore();
   const router = useRouter();
 
@@ -25,18 +23,25 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme, resolvedTheme } = useTheme();
 
+  // Handle Scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Handle Click Outside Dropdown
   useEffect(() => {
-    const handleResize = () => { if (window.innerWidth >= 1024) setIsMobileMenuOpen(false); };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [dropdownRef]);
 
   const handleLogout = () => {
     logout();
@@ -50,6 +55,7 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
     else setTheme("light");
   };
 
+  // 2. Perbaiki logika ThemeIcon
   const ThemeIcon = () => {
     if (theme === "dark") return <Moon size={18} className="text-primary-1" />;
     if (theme === "light") return <Sun size={18} className="text-amber-500" />;
@@ -58,51 +64,96 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
 
   return (
     <>
-      <nav className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 py-0 shadow-lg shadow-slate-200/20 dark:shadow-none" : "bg-transparent border-b border-transparent py-2"}`}>
+      <nav className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 py-0 shadow-lg shadow-slate-200/20" : "bg-transparent border-b border-transparent py-2"}`}>
         <FadeInDown className={`${variant === "dashboard" ? "px-6" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"}`}>
           <div className="flex justify-between items-center h-16 md:h-20">
             
-            <div className="flex w-full justify-between items-center gap-4">
-              <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-4">
+              <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-dark-bg2 text-slate-600 dark:text-slate-300">
                 <Menu size={20} />
               </button>
               <Link href="/" className="flex justify-center items-center transition-all hover:opacity-80 active:scale-95">
-                <AppIcon size={isScrolled ? 80 : 100} className="transition-all duration-500" variant="circle"/>
+                <AppIcon variant="rectangle" width={isScrolled ? 120 : 140} height={40} className="transition-all duration-500"/>
               </Link>
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
               <div className="hidden lg:flex items-center gap-4">
                 <LanguageSwitcher />
-                <button onClick={toggleTheme} className={`p-2.5 rounded-2xl border transition-all active:scale-95 ${isScrolled ? "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700" : "bg-white/10 backdrop-blur-md border-white/20"}`}>
+                <button onClick={toggleTheme} className={`p-2.5 rounded-2xl border transition-all active:scale-95 ${isScrolled ? "bg-bg2 dark:bg-dark-bg2 border-slate-200 dark:border-white/5" : "bg-white/10 backdrop-blur-md border-white/20"}`}>
                   <ThemeIcon />
                 </button>
               </div>
 
               {user ? (
                 <div className="relative" ref={dropdownRef}>
-                  <div className={`flex items-center gap-2 sm:gap-3 pl-2 border-l transition-colors ${isScrolled ? 'border-slate-100 dark:border-slate-800' : 'border-white/20'}`}>
-                    <div onClick={() => setIsProfileOpen(!isProfileOpen)} className={`flex items-center gap-2 p-1 rounded-full border cursor-pointer transition-all group ${isScrolled ? "bg-slate-100 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700" : "bg-white/20 backdrop-blur-sm border-white/30"}`}>
-                      <div className="w-8 h-8 rounded-full bg-primary-1 flex items-center justify-center text-white text-[10px] font-black uppercase shadow-lg shadow-primary-1/20 group-hover:scale-90 transition-transform">{user?.firstname?.substring(0, 2)}</div>
-                      <span className={`hidden md:block text-xs font-black px-1 uppercase tracking-tight ${isScrolled ? 'text-slate-700 dark:text-slate-200' : 'text-slate-800'}`}>{user?.firstname?.split(' ')[0]}</span>
-                      <ChevronDown size={14} className={`mr-1 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''} text-slate-400`} />
+                  <div className={`flex items-center gap-2 sm:gap-3 pl-2 border-l transition-colors ${isScrolled ? 'border-slate-100 dark:border-white/5' : 'border-white/20'}`}>
+                    <div 
+                      onClick={() => setIsProfileOpen(!isProfileOpen)} 
+                      className={`flex items-center gap-2 p-1.5 pr-3 rounded-full border cursor-pointer transition-all group ${isScrolled ? "bg-bg2 dark:bg-dark-bg2 border-slate-200 dark:border-white/5" : "bg-white/20 backdrop-blur-sm border-white/30"}`}
+                    >
+                      <div className="w-8 h-8 rounded-full bg-primary-1 dark:bg-dark-primary1 flex items-center justify-center text-white text-[10px] font-black uppercase shadow-lg shadow-primary-1/20 transition-transform group-hover:scale-95">
+                        {user?.firstname?.substring(0, 2)}
+                      </div>
+                      <span className={`hidden md:block text-xs font-black uppercase tracking-tight ${isScrolled ? 'text-slate-700 dark:text-slate-200' : 'text-slate-800 dark:text-white'}`}>
+                        {user?.firstname?.split(' ')[0]}
+                      </span>
+                      <ChevronDown size={14} className={`transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''} text-slate-400`} />
                     </div>
                   </div>
-                  {/* Dropdown Desktop tetap di sini karena posisinya 'absolute' terhadap profil */}
+
+                  {/* DESKTOP DROPDOWN */}
                   <AnimatePresence>
                     {isProfileOpen && (
-                      <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute right-0 mt-4 w-64 origin-top-right z-[60]">
-                        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[2.5rem] shadow-2xl p-3">
-                           {/* ... isi dropdown sama seperti sebelumnya ... */}
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }} 
+                        animate={{ opacity: 1, y: 0, scale: 1 }} 
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }} 
+                        className="absolute right-0 mt-3 w-60 origin-top-right z-[60]"
+                      >
+                        <div className="bg-white dark:bg-dark-bg2 border border-slate-100 dark:border-white/5 rounded-[1.8rem] shadow-xl p-2">
+                          {/* User Info Section - Lebih Ramping */}
+                          <div className="flex items-center gap-3 p-3 mb-1 bg-bg2 dark:bg-dark-bg1 rounded-[1.4rem]">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-1 to-primary-2 flex items-center justify-center text-white font-black text-xs shrink-0">
+                              {user?.firstname?.substring(0, 2).toUpperCase()}
+                            </div>
+                            <div className="flex flex-col overflow-hidden">
+                              <span className="font-black text-slate-800 dark:text-white text-xs truncate uppercase tracking-tight">
+                                {user?.firstname}
+                              </span>
+                              <div className="flex items-center gap-1 text-[8px] text-primary-1 font-bold uppercase tracking-widest opacity-80">
+                                <ShieldCheck size={8} /> {user?.role || 'Siswa'}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 gap-0.5">
+                            <DropdownItem icon={<LayoutDashboard size={14}/>} label="Dashboard" href="/dashboard/main" />
+                            <DropdownItem icon={<User size={14}/>} label="Profil" href="/dashboard/profile" />
+                            <DropdownItem icon={<Settings size={14}/>} label="Setting" href="/dashboard/settings" />
+                            
+                            <hr className="my-1.5 border-slate-50 dark:border-white/5 mx-2" />
+                            
+                            <button 
+                              onClick={handleLogout}
+                              className="flex items-center gap-3 w-full p-2.5 px-3 rounded-xl text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all group"
+                            >
+                              <div className="p-1.5 rounded-lg bg-red-100 dark:bg-red-500/20 group-hover:scale-105 transition-transform">
+                                <LogOut size={14} />
+                              </div>
+                              <span className="text-[10px] font-black uppercase tracking-widest">Keluar</span>
+                            </button>
+                          </div>
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
+
                 </div>
               ) : (
                 <div className="hidden lg:flex items-center gap-6">
-                  <Link href="/auth/login" className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">Masuk</Link>
-                  <Link href="/auth/register" className="bg-primary-1 text-white px-7 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-primary-1/20">Daftar</Link>
+                  <Link href="/auth/login" className="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:text-primary-1 transition-colors">Masuk</Link>
+                  <Link href="/auth/register" className="bg-primary-1 dark:bg-dark-primary1 text-white px-7 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-primary-1/20 hover:-translate-y-1 transition-all">Daftar</Link>
                 </div>
               )}
             </div>
@@ -110,7 +161,6 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
         </FadeInDown>
       </nav>
 
-      {/* Render Mobile Menu di Luar Nav Utama */}
       <MobileMenu 
         isOpen={isMobileMenuOpen} 
         onClose={() => setIsMobileMenuOpen(false)}
@@ -121,5 +171,17 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
         theme={theme || "system"}
       />
     </>
+  );
+}
+
+// Helper Component untuk Menu Dropdown
+function DropdownItem({ icon, label, href }: { icon: any, label: string, href: string }) {
+  return (
+    <Link href={href} className="flex items-center gap-3 p-2.5 px-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-bg2 dark:hover:bg-dark-bg1 hover:text-primary-1 transition-all group">
+      <div className="p-1.5 rounded-lg bg-slate-50 dark:bg-white/5 group-hover:bg-primary-1 group-hover:text-white transition-all">
+        {icon}
+      </div>
+      <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
+    </Link>
   );
 }

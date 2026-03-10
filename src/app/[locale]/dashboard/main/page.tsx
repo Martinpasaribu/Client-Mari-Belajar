@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 // Import wrapper animasi kita
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import { TakeCatalogsCard } from '@/components/card/TakeCatalogCard';
 
 export default function DashboardPage() {
   const [enrollments, setEnrollments] = useState([]);
@@ -218,28 +219,12 @@ export default function DashboardPage() {
             </div>
           </FadeInItem>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCatalogs.map((item: any) => (
               <FadeInItem key={item._id}>
-                <div className="group h-full bg-white dark:bg-dark-bg2/40 border border-slate-200 dark:border-white/5 rounded-[2rem] p-6 transition-all hover:shadow-xl dark:hover:bg-dark-bg2 flex flex-col">
-                  <div className="flex justify-between items-start mb-6">
-                    <div className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-dark-bg1 flex items-center justify-center text-slate-400 shadow-inner group-hover:text-dark-primary-2 transition-colors">
-                      {item.isFree ? <LockOpen size={20} className="text-emerald-500" /> : <Lock size={20} />}
-                    </div>
-                  </div>
-                  <h4 className="font-bold text-slate-900 dark:text-slate-200 mb-6 line-clamp-2 leading-snug group-hover:text-primary-1 transition-colors">
-                    {item.name}
-                  </h4>
-                  <div className="mt-auto">
-                    <Link 
-                      href={`/dashboard/catalogs/${item._id}`}
-                      className={`w-full py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.15em] text-center block transition-all active:scale-95 shadow-sm
-                        ${item.isFree ? 'bg-emerald-500 text-white hover:bg-emerald-600' : 'bg-dark-primary-2 text-white hover:bg-primary-1'}`}
-                    >
-                      {item.isFree ? 'Ambil Gratis' : 'Buka Akses'}
-                    </Link>
-                  </div>
-                </div>
+              <TakeCatalogsCard
+                  item={item}
+                />
               </FadeInItem>
             ))}
           </div>

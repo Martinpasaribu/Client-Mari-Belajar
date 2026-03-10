@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { CheckCircle, AlertTriangle, XCircle, Info, Loader2, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-type ToastType = "success" | "error" | "warning" | "info" | "loading" | "default";
+export type ToastType = "success" | "error" | "warning" | "info" | "loading" | "default";
 
 interface Toast {
   id: number;
@@ -12,7 +14,8 @@ interface Toast {
 }
 
 interface ToastContextType {
-  showToast: (message: string, type?: ToastType) => void;
+  // Kita buat parameter kedua opsional agar tidak kaku
+  showToast: (message: string | any, type?: ToastType | string) => void;
   hideToast: (id: number) => void;
 }
 
@@ -25,12 +28,28 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
-  const showToast = useCallback((message: string, type: ToastType = "default") => {
+  const showToast = useCallback((msg: any, type: any = "default") => {
     const id = Date.now();
-    setToasts((prev) => [...prev, { id, message, type }]);
+    
+    // LOGIKA CERDAS: Mendeteksi jika user menukar urutan (type dulu baru message)
+    const validTypes = ["success", "error", "warning", "info", "loading", "default"];
+    
+    let finalMessage = "";
+    let finalType: ToastType = "default";
 
-    // Auto close jika bukan loading
-    if (type !== "loading") {
+    if (validTypes.includes(msg)) {
+        // Jika parameter pertama adalah TYPE (e.g. showToast("error", "pesan"))
+        finalType = msg as ToastType;
+        finalMessage = typeof type === "string" ? type : (type?.message || "Terjadi kesalahan");
+    } else {
+        // Jika parameter pertama adalah MESSAGE (e.g. showToast("pesan", "error"))
+        finalMessage = typeof msg === "string" ? msg : (msg?.message || "Terjadi kesalahan");
+        finalType = validTypes.includes(type) ? (type as ToastType) : "default";
+    }
+
+    setToasts((prev) => [...prev, { id, message: finalMessage, type: finalType }]);
+
+    if (finalType !== "loading") {
       setTimeout(() => hideToast(id), 4000);
     }
   }, [hideToast]);
@@ -38,17 +57,18 @@ export const ToastProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast, hideToast }}>
       {children}
-      {/* Toast Container */}
-      <div className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-3 w-full max-w-xs">
-        {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onClose={() => hideToast(toast.id)} />
-        ))}
+      
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 w-full max-w-xs pointer-events-none">
+        <AnimatePresence mode="popLayout">
+          {toasts.map((toast) => (
+            <ToastItem key={toast.id} toast={toast} onClose={() => hideToast(toast.id)} />
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
 };
 
-// Komponen Internal Toast Item
 const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) => {
   const icons = {
     success: <CheckCircle className="text-emerald-500" size={20} />,
@@ -56,28 +76,57 @@ const ToastItem = ({ toast, onClose }: { toast: Toast; onClose: () => void }) =>
     warning: <AlertTriangle className="text-amber-500" size={20} />,
     info: <Info className="text-blue-500" size={20} />,
     loading: <Loader2 className="text-indigo-500 animate-spin" size={20} />,
-    default: <div className="w-5 h-5 bg-slate-200 rounded-full" />,
+    default: <Info className="text-slate-500" size={20} />,
   };
 
   const styles = {
-    success: "border-emerald-100 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-900/50",
-    error: "border-rose-100 bg-rose-50 dark:bg-rose-950/30 dark:border-rose-900/50",
-    warning: "border-amber-100 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900/50",
-    info: "border-blue-100 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900/50",
-    loading: "border-indigo-100 bg-indigo-50 dark:bg-indigo-950/30 dark:border-indigo-900/50",
-    default: "border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800",
+    success: "border-emerald-200/50 bg-white/80 dark:bg-emerald-950/20 shadow-emerald-500/10",
+    error: "border-rose-200/50 bg-white/80 dark:bg-rose-950/20 shadow-rose-500/10",
+    warning: "border-amber-200/50 bg-white/80 dark:bg-amber-950/20 shadow-amber-500/10",
+    info: "border-blue-200/50 bg-white/80 dark:bg-blue-950/20 shadow-blue-500/10",
+    loading: "border-indigo-200/50 bg-white/80 dark:bg-indigo-950/20 shadow-indigo-500/10",
+    default: "border-slate-200/50 bg-white/80 dark:bg-slate-900/20 shadow-slate-500/10",
   };
 
   return (
-    <div className={`flex items-center gap-3 p-4 rounded-2xl border shadow-lg animate-in fade-in slide-in-from-right-5 duration-300 ${styles[toast.type]}`}>
-      <div className="shrink-0">{icons[toast.type]}</div>
-      <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex-1">
-        {toast.message}
-      </p>
-      <button onClick={onClose} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
-        <X size={16} />
+    <motion.div
+      layout
+      initial={{ opacity: 0, x: 50, scale: 0.9, filter: "blur(8px)" }}
+      animate={{ opacity: 1, x: 0, scale: 1, filter: "blur(0px)" }}
+      exit={{ opacity: 0, scale: 0.9, x: 20, transition: { duration: 0.2 } }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      className={`pointer-events-auto flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl ${styles[toast.type]}`}
+    >
+      <div className="shrink-0 p-2 bg-white dark:bg-white/5 rounded-xl shadow-sm">
+        {icons[toast.type]}
+      </div>
+      
+      <div className="flex-1">
+        <p className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-0.5">
+            {toast.type}
+        </p>
+        <p className="text-xs font-bold text-slate-700 dark:text-slate-100 leading-tight">
+            {toast.message}
+        </p>
+      </div>
+
+      <button 
+        onClick={onClose} 
+        className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 text-slate-400 transition-colors"
+      >
+        <X size={14} />
       </button>
-    </div>
+
+      {/* Progress Bar Timer */}
+      {toast.type !== 'loading' && (
+        <motion.div 
+            initial={{ scaleX: 1 }}
+            animate={{ scaleX: 0 }}
+            transition={{ duration: 4, ease: "linear" }}
+            className={`absolute bottom-0 left-4 right-4 h-[2px] rounded-full origin-left bg-current opacity-20`}
+        />
+      )}
+    </motion.div>
   );
 };
 

@@ -31,7 +31,7 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
           <div className="flex items-center gap-1.5 rounded-2xl bg-slate-100/50 px-3 py-1.5 backdrop-blur-sm transition-all duration-500 group-hover:bg-white/10 group-hover:text-white">
             <Layers size={14} className="text-slate-400 group-hover:text-white" />
             <span className=" text-[10px] font-black uppercase tracking-wider text-slate-500 group-hover:text-white">
-              {category.sub_categories?.length || 0} Modules
+              {category.subCategoryCount || 0} Modules
             </span>
           </div>
         </div>

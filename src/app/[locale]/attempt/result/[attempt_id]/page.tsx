@@ -212,7 +212,7 @@ export default function GuestQuizResultPage() {
            <p className="text-white/70 mb-10 max-w-md mx-auto font-medium">Buat akun sekarang agar semua hasil latihanmu tersimpan dan dapat diakses kapan saja.</p>
            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button onClick={() => router.push('/id/auth/register')} className="px-10 py-5 bg-primary-1 text-white font-black text-[11px] uppercase tracking-widest rounded-[2rem] shadow-xl hover:scale-105 transition-all">Daftar Akun Gratis</button>
-              <button onClick={() => router.push('/id/dashboard')} className="px-10 py-5 bg-white/10 border border-white/20 text-white font-black text-[11px] uppercase tracking-widest rounded-[2rem] hover:bg-white/20 transition-all">Coba Bab Lain</button>
+              <button onClick={() => router.push('/id/category')} className="px-10 py-5 bg-white/10 border border-white/20 text-white font-black text-[11px] uppercase tracking-widest rounded-[2rem] hover:bg-white/20 transition-all">Coba Bab Lain</button>
            </div>
         </div>
       </FadeInContainer>

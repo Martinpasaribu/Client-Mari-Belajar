@@ -10,11 +10,16 @@ import {
 } from "lucide-react";
 import api from "@/lib/axios";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import Link from "next/link";
+import { useToast } from "@/context/ToastContext";
 
 export default function LandingPage() {
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+
+  const { showToast } = useToast();
 
   const [statsData, setStatsData] = useState({
     totalQuestions: 0,
@@ -51,6 +56,11 @@ export default function LandingPage() {
   const formatNumber = (num: number) => {
     return num >= 1000 ? (num / 1000).toFixed(1) + 'k+' : num;
   };
+
+
+  const testToast =  ()=> {
+    showToast("success", 'berhasil' as any);
+  }
 
 const stats = [
     { label: "Total Soal", value: formatNumber(statsData.totalQuestions), icon: BookOpen },
@@ -107,9 +117,9 @@ const stats = [
             </p>
           </FadeInItem>
           <FadeInItem className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <button className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group">
+            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group">
               Mulai Latihan <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
             <div className="relative w-full sm:w-80">
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                <input 
@@ -173,6 +183,11 @@ const stats = [
             <div className="max-w-xl">
               <h2 className="text-3xl md:text-4xl font-black mb-4">Daftar Materi Latihan</h2>
               <p className="text-zinc-500 dark:text-zinc-400">Pilih sub-materi spesifik untuk mulai mengerjakan bank soal hari ini.</p>
+                          
+              {/* <button onClick={testToast} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group">
+                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button> */}
+
             </div>
             <div className="px-4 py-2 bg-primary-1/10 text-primary-1 rounded-full text-xs font-bold uppercase tracking-widest border border-primary-1/20">
               {subCategories.length} Materi Tersedia

@@ -1,4 +1,4 @@
-// components/ThemeProvider.tsx
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
@@ -12,6 +12,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Mencegah flash of unstyled content (FOUC)
+  // return <div className="invisible">{children}</div> sudah benar untuk mencegah kedipan putih
   if (!mounted) {
     return <div className="invisible">{children}</div>;
   }
@@ -20,8 +21,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     <NextThemesProvider 
       attribute="class" 
       defaultTheme="system" 
-      enableSystem
-      disableTransitionOnChange // Tambahkan ini agar tidak ada animasi aneh saat switch pertama kali
+      enableSystem={true} // Pastikan ini eksplisit true
+      disableTransitionOnChange
     >
       {children}
     </NextThemesProvider>

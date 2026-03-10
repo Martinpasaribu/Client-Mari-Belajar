@@ -68,7 +68,7 @@ export default function SubCategoryPage() {
             <FadeInItem className="flex-1">
               <div className="mb-4 flex items-center gap-2">
                 <LayoutGrid size={14} className="text-primary-1" />
-                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Curriculum</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Modul Materi</span>
               </div>
               <h1 className="mb-6 text-5xl font-black tracking-tighter text-white md:text-6xl italic uppercase">
                 {data.name}
@@ -118,7 +118,7 @@ export default function SubCategoryPage() {
                   <div className="mt-1 flex items-center gap-4">
                     <div className="flex items-center gap-1.5 text-slate-400">
                       <GraduationCap size={16} className="text-primary-1" />
-                      <span className="text-xs font-bold italic tracking-wide">Available Chapters</span>
+                      <span className="text-xs font-bold italic tracking-wide">{sub.sub_description}</span>
                     </div>
                   </div>
                 </div>

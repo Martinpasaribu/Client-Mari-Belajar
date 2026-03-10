@@ -17,12 +17,15 @@ import {
 } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { useToast } from '@/context/ToastContext';
+import { getErrorMessage } from '@/lib/utils';
 
 export default function QuizAttemptPage() {
   const router = useRouter();
   const params = useParams();
   const babId = params.bab_id; 
-  
+  const { showToast } = useToast();
+
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentIdx, setCurrentIdx] = useState(0);
@@ -46,9 +49,10 @@ export default function QuizAttemptPage() {
     const initializeQuiz = async () => {
       try {
         const startRes = await api.post(`/attempts/start/${babId}`, { bab_key: babId });
-        const qRes = await api.get(`/bab/questions/${babId}`);
+        const qRes = await api.get(`/bab/questions/guest/${babId}`);
         
         if (startRes.data.success) {
+          showToast("success", startRes.data.message);
           const attempt = startRes.data.data;
           setAttemptId(attempt._id);
           setQuestions(qRes.data.data.questions || qRes.data.data);
@@ -63,7 +67,9 @@ export default function QuizAttemptPage() {
           }
         }
       } catch (err: any) {
-        console.error("Init error:", err);
+        // console.error("Init error:", err);
+          const msg = getErrorMessage(err);
+          showToast("error", msg as any);
       } finally {
         setIsLoading(false);
       }
@@ -388,3 +394,4 @@ export default function QuizAttemptPage() {
     </div>
   );
 }
+
