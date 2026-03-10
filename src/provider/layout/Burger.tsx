@@ -47,30 +47,6 @@ export default function MobileMenu({
             </button>
           </div>
 
-          {/* Nav Links */}
-          <div className="flex-1 space-y-4 overflow-y-auto">
-            {!user && (
-              <div className="grid grid-cols-1 gap-4 mb-8">
-                <Link
-                  href="/auth/login"
-                  onClick={onClose}
-                  className="p-5 bg-slate-50 dark:bg-slate-800 rounded-[2rem] font-black uppercase tracking-widest text-center text-xs"
-                >
-                  Masuk
-                </Link>
-                <Link
-                  href="/auth/register"
-                  onClick={onClose}
-                  className="p-5 bg-primary-1 text-white rounded-[2rem] font-black uppercase tracking-widest text-center shadow-xl shadow-primary-1/20 text-xs"
-                >
-                  Daftar Sekarang
-                </Link>
-              </div>
-            )}
-
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-4 mb-2">
-              Main Menu
-            </p>
 
             {user && (
               <>
@@ -95,6 +71,33 @@ export default function MobileMenu({
                 </button>
               </>
             )}
+
+          {/* Nav Links */}
+          <div className="flex-1 space-y-4 overflow-y-auto">
+            {!user && (
+              <div className="grid grid-cols-1 gap-4 mb-8">
+                <Link
+                  href="/auth/login"
+                  onClick={onClose}
+                  className="p-5 bg-slate-50 dark:bg-slate-800 rounded-[2rem] font-black uppercase tracking-widest text-center text-xs"
+                >
+                  Masuk
+                </Link>
+                <Link
+                  href="/auth/register"
+                  onClick={onClose}
+                  className="p-5 bg-primary-1 text-white rounded-[2rem] font-black uppercase tracking-widest text-center shadow-xl shadow-primary-1/20 text-xs"
+                >
+                  Daftar Sekarang
+                </Link>
+              </div>
+            )}
+
+
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-4 mb-2">
+               Main Menu
+            </p>
+
   
             <MobileNavLink href="/catalogs" label="Dashboard" onClick={onClose} />
             <MobileNavLink href="/about" label="Tentang Kami" onClick={onClose} />
