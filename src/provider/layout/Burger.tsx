@@ -71,8 +71,6 @@ export default function MobileMenu({
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-4 mb-2">
               Main Menu
             </p>
-            <MobileNavLink href="/courses" label="Katalog Kursus" onClick={onClose} />
-            <MobileNavLink href="/about" label="Tentang Kami" onClick={onClose} />
 
             {user && (
               <>
@@ -80,8 +78,12 @@ export default function MobileMenu({
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-4 mb-2">
                   User Area
                 </p>
-                <MobileNavLink href="/dashboard/main" label="Dashboard" onClick={onClose} />
-                <MobileNavLink href="/dashboard/profile" label="Profil" onClick={onClose} />
+                <MobileNavLink href="/dashboard/main" label="Main" onClick={onClose} />
+                <MobileNavLink href="/dashboard/modules" label="modules" onClick={onClose} />
+                <MobileNavLink href="/dashboard/payment" label="payment" onClick={onClose} />
+                <MobileNavLink href="/dashboard/profile" label="profile" onClick={onClose} />
+                <MobileNavLink href="/dashboard/transactions" label="transactions" onClick={onClose} />
+                <MobileNavLink href="/dashboard/settings" label="settings" onClick={onClose} />
                 <button
                   onClick={() => {
                     handleLogout();
@@ -93,6 +95,13 @@ export default function MobileMenu({
                 </button>
               </>
             )}
+  
+            <MobileNavLink href="/catalogs" label="Dashboard" onClick={onClose} />
+            <MobileNavLink href="/about" label="Tentang Kami" onClick={onClose} />
+            <MobileNavLink href="/privacy-policy" label="Privacy & Policy" onClick={onClose} />
+            <MobileNavLink href="/terms-condition" label="Terms Condition" onClick={onClose} />
+
+
           </div>
 
           {/* Footer Mobile Menu */}
