@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useParams, useRouter } from "next/navigation"; // Gunakan navigation
-import { Play, Trophy, Calendar, Clock, ChevronRight, Loader2, Info, Target, Zap } from "lucide-react";
+import { Play, Trophy, Calendar, Clock, ChevronRight, Loader2, Info, Target, Zap, Clock2Icon, TimerIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import { MainLoading } from "@/components/modals/MainLoading";
+import { MainEmpty } from "@/components/modals/MainEmpty";
 
 export default function AttemptsPage() {
   const { babId } = useParams();
@@ -33,20 +35,17 @@ export default function AttemptsPage() {
   }, [babId]);
 
   if (isLoading) return (
-    <div className="flex h-[80vh] flex-col items-center justify-center gap-4">
-      <Loader2 className="animate-spin text-primary-1" size={40} />
-      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Menyiapkan Sesi...</p>
-    </div>
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={isLoading} title="bab" />
+    </>
   );
 
   if (!data) return (
-    <div className="flex h-[80vh] flex-col items-center justify-center gap-4 bg-bg1 dark:bg-dark-bg2">
-      <div className="p-6 rounded-full bg-slate-100 dark:bg-slate-800">
-        <Info className="text-slate-300" size={48} />
-      </div>
-      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Data tidak ditemukan.</p>
-      <button onClick={() => router.back()} className="text-primary-1 font-black text-sm hover:underline uppercase">Kembali</button>
-    </div>
+      <MainEmpty 
+        title="Modul Tidak Ditemukan" 
+        description="Sepertinya modul yang kamu cari tidak tersedia di katalog kami saat ini."
+      />
   );
 
   return (
@@ -61,9 +60,15 @@ export default function AttemptsPage() {
           
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
-                <Zap size={12} className="text-primary-1" fill="currentColor" />
-                <span className="text-[9px] font-black uppercase tracking-widest text-primary-1">Kuis Tersedia</span>
+              <div className="flex gap-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                  <Zap size={12} className="text-primary-1" fill="currentColor" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-primary-1">Kuis Tersedia</span>
+                </div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                  <TimerIcon size={12} className="text-white" fill="currentColor" />
+                  <span className="text-[9px] font-black uppercase tracking-widest text-white">{data.bab.duration} menit</span>
+                </div>
               </div>
               <div>
                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Materi Bab:</h2>
@@ -78,7 +83,7 @@ export default function AttemptsPage() {
 
             <Link 
               href={`/attempt/${babId}`}
-              className="inline-flex items-center justify-center gap-3 bg-primary-1 text-white px-10 py-5 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all shadow-xl active:scale-95 group/btn"
+              className="inline-flex items-center justify-center gap-3 bg-primary-1 text-white px-1 md:px-6 py-5 rounded-[2rem] font-black uppercase text-xs tracking-[0.2em] hover:bg-white hover:text-slate-900 transition-all shadow-xl active:scale-95 group/btn"
             >
               <Play size={16} fill="currentColor" className="group-hover:scale-110 transition-transform" /> 
               Mulai Attempt Baru

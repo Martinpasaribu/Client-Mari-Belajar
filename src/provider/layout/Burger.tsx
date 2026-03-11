@@ -59,7 +59,7 @@ export default function MobileMenu({
                 </p>
                 <MobileNavLink href="/dashboard/main" label="Main" onClick={onClose} />
                 <MobileNavLink href="/dashboard/modules" label="modules" onClick={onClose} />
-                <MobileNavLink href="/dashboard/payment" label="payment" onClick={onClose} />
+                <MobileNavLink href="/dashboard/history" label="History" onClick={onClose} />
                 <MobileNavLink href="/dashboard/profile" label="profile" onClick={onClose} />
                 <MobileNavLink href="/dashboard/transactions" label="transactions" onClick={onClose} />
                 <MobileNavLink href="/dashboard/settings" label="settings" onClick={onClose} />

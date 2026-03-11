@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -19,12 +20,16 @@ import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapp
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { useToast } from '@/context/ToastContext';
 import { getErrorMessage } from '@/lib/utils';
+import { MainLoading } from '@/components/modals/MainLoading';
+import { useAuthStore } from '@/store/useAuthStore';
+import { ActiveAttemptModal } from '@/components/modals/ActiveAttemptModal';
 
 export default function QuizAttemptPage() {
   const router = useRouter();
   const params = useParams();
   const babId = params.bab_id; 
   const { showToast } = useToast();
+  const { user } = useAuthStore();
 
   const [attemptId, setAttemptId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<any[]>([]);
@@ -38,6 +43,11 @@ export default function QuizAttemptPage() {
   const hasInitialized = useRef(false);
   const submittingRef = useRef(false);
   const answersRef = useRef<Record<string, string>>({});
+  const currentQuestion = questions[currentIdx];
+  const [activeAttemptData, setActiveAttemptData] = useState<{ isOpen: boolean; babId: string }>({
+  isOpen: false,
+  babId: ''
+});
 
   useEffect(() => {
     answersRef.current = userAnswers;
@@ -45,57 +55,109 @@ export default function QuizAttemptPage() {
 
   // --- INITIALIZE QUIZ ---
   useEffect(() => {
+
     if (!babId || hasInitialized.current) return;
+
     const initializeQuiz = async () => {
       try {
         const startRes = await api.post(`/attempts/start/${babId}`, { bab_key: babId });
         const qRes = await api.get(`/bab/questions/guest/${babId}`);
         
         if (startRes.data.success) {
-          showToast("success", startRes.data.message);
           const attempt = startRes.data.data;
-          setAttemptId(attempt._id);
-          setQuestions(qRes.data.data.questions || qRes.data.data);
-          setTimeLeft(attempt.remainingTime || 0); 
+          const remaining = attempt.remainingTime || 0;
 
+          // 1. Sinkronisasi jawaban dari Database ke State & Ref
+          // Ini penting agar saat auto-submit, jawaban yang sudah tersimpan tidak hilang
           if (attempt.answers?.length > 0) {
             const recovered: Record<string, string> = {};
             attempt.answers.forEach((ans: any) => {
               recovered[ans.question_key] = ans.answer_given;
             });
             setUserAnswers(recovered);
+            answersRef.current = recovered; // Update ref secara instan
           }
+
+          setAttemptId(attempt._id);
+          setQuestions(qRes.data.data.questions || qRes.data.data);
+          setTimeLeft(remaining); 
+
+          // 2. Proteksi & Auto-Submit jika kuis sudah selesai/habis waktunya
+          // Kita satukan logika 'finished' dan 'remaining <= 0' agar satu pintu lewat executeSubmit
+          if (attempt.status === 'finished' || attempt.status === 'submitted' || remaining <= 0) {
+            showToast("info", "Sesi kuis telah berakhir. Mengalihkan...");
+            
+            // Panggil fungsi submit secara paksa dengan ID dari response
+            await executeSubmit(attempt._id);
+            return;
+          }
+
+          showToast("success", startRes.data.message);
         }
       } catch (err: any) {
-        // console.error("Init error:", err);
-          const msg = getErrorMessage(err);
-          showToast("error", msg as any);
+        const errorData = err.response?.data;
+        
+        // LOGIKA MODAL WARNING: Jika ada bab lain yang aktif
+        if (errorData?.activeBabId && errorData.activeBabId !== babId) {
+          setActiveAttemptData({
+            isOpen: true,
+            babId: errorData.activeBabId
+          });
+          return;
+        }
+
+        const msg = getErrorMessage(err);
+        showToast("error", msg as any);
+        
+        // Opsional: Jika error parah, balikkan ke katalog agar tidak stuck
+        // router.push('/dashboard/catalogs');
       } finally {
         setIsLoading(false);
       }
     };
+
     initializeQuiz();
     hasInitialized.current = true;
   }, [babId]);
-
-  // --- TIMER LOGIC ---
+    
+  // --- TIMER LOGIC & AUTO SUBMIT ---
   useEffect(() => {
+    // Jika waktu habis dan tidak sedang proses submit, jalankan executeSubmit
+    if (timeLeft <= 0 && attemptId && !isLoading && !submittingRef.current) {
+      executeSubmit();
+      return;
+    }
+
     if (timeLeft <= 0 || isLoading || submittingRef.current) return;
+
     const timer = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
           clearInterval(timer);
-          setTimeout(() => executeSubmit(), 0); 
-          return 0;
+          return 0; // Mengarah ke blok auto-submit di atas pada render berikutnya
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, isLoading]);
+  }, [timeLeft, isLoading, attemptId]);
 
-  const executeSubmit = async () => {
-    if (submittingRef.current || !attemptId) return;
+  // --- PROTEKSI REFRESH ---
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!submittingRef.current && timeLeft > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [timeLeft]);
+
+  const executeSubmit = async (forcedId?: string) => {
+    const targetId = forcedId || attemptId;
+    if (submittingRef.current || !targetId) return;
+
     submittingRef.current = true;
     setIsSubmitting(true);
     setShowConfirm(false);
@@ -106,26 +168,30 @@ export default function QuizAttemptPage() {
         answer_given: answersRef.current[q._id] || "" 
       }));
 
-      const res = await api.post(`/attempts/${attemptId}/submit`, { 
+      const res = await api.post(`/attempts/${targetId}/submit`, { 
         answers: formattedAnswers 
       });
 
       if (res.data.success) {
-        router.replace(`/attempt/result/${attemptId}`);
+          const targetPath = user ? 'dashboard/history' : 'attempt';
+          router.replace(`/${targetPath}/result/${targetId}`);
       }
     } catch (err: any) {
       console.error("Submit error:", err);
-      if (err.response?.status === 400) {
-         router.replace(`/attempt/result/${attemptId}`);
+      // Tangani status 400 (Waktu Habis) agar tidak stuck
+      if (err.response?.status === 400 || err.response?.data?.message?.includes('expired')) {
+            const targetPath = user ? 'dashboard/history' : 'attempt';
+            router.replace(`/${targetPath}/result/${targetId}`);
          return;
       }
       submittingRef.current = false;
       setIsSubmitting(false);
-      alert("Gagal mengirim jawaban.");
+      showToast("error", "Gagal mengirim jawaban.");
     }
   };
 
   const handleSelectOption = (label: string) => {
+    if (timeLeft <= 0) return; // Kunci input jika waktu habis
     const qId = questions[currentIdx]._id;
     setUserAnswers(prev => ({ ...prev, [qId]: label }));
   };
@@ -247,151 +313,162 @@ export default function QuizAttemptPage() {
     );
   };
 
-  if (isLoading) return (
-    <div className="flex h-screen flex-col items-center justify-center bg-bg1 gap-4">
-      <Loader2 className="h-12 w-12 animate-spin text-primary-1" />
-      <p className="font-black text-[10px] uppercase tracking-[0.4em] text-slate-500 animate-pulse">Initializing Exam Paper</p>
-    </div>
+  if (isLoading && !currentQuestion && !activeAttemptData.isOpen) return (
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={isLoading} title="quiz" />
+    </>
   );
-
-  const currentQuestion = questions[currentIdx];
 
   return (
     <div className="min-h-screen bg-bg2 dark:bg-dark-bg1 flex flex-col font-sans transition-colors duration-300">
       
+      {/* Modal Sesi Aktif */}
+      <ActiveAttemptModal 
+        isOpen={activeAttemptData.isOpen}
+        activeBabId={activeAttemptData.babId}
+        onRedirect={(id) => router.replace(`${id}`)}
+        onClose={() => router.push('/dashboard/modules')}
+      />
+
       <ConfirmModal 
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
-        onConfirm={executeSubmit}
+        onConfirm={() => executeSubmit()}
         isLoading={isSubmitting}
         title="Akhiri Sesi Kuis?"
         description="Jawaban Anda akan dikirim untuk penilaian. Pastikan tidak ada soal yang terlewat."
       />
 
-      {/* STICKY HEADER */}
-      <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex justify-between items-center gap-6">
-          <div className="flex items-center gap-6 flex-1">
-            <div className="hidden md:block">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
-              <p className="text-sm font-black text-slate-900 dark:text-white">{currentIdx + 1} / {questions.length}</p>
-            </div>
-            <div className="h-2.5 flex-1 max-w-xs bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-primary-1 transition-all duration-700 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
-                style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <div className={`px-5 py-3 rounded-2xl border-2 flex items-center gap-3 transition-all ${
-              timeLeft < 60 ? 'bg-red-500/10 border-red-500 text-red-500 animate-pulse' : 'bg-slate-900 dark:bg-primary-1/10 text-white dark:text-primary-1 border-transparent'
-            }`}>
-              <Clock size={18} />
-              <span className="font-mono font-black text-xl leading-none tracking-tighter">{formatTime(timeLeft)}</span>
-            </div>
-            
-            <button 
-              onClick={() => setShowConfirm(true)}
-              className="bg-primary-1 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary-1/20"
-            >
-              Finish
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <FadeInContainer className="flex-1 max-w-6xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
-        
-        {/* MAIN QUESTION AREA */}
-        <div className="lg:col-span-3 flex flex-col gap-6">
-          <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3.5rem] p-8 md:p-14 shadow-2xl shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-white/5 relative overflow-hidden">
-            
-            {/* Type Indicator */}
-            <div className="flex items-center justify-between mb-12">
-               <div className="flex items-center gap-3 px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
-                 {currentQuestion?.type === 'image_options' && <ImageIcon size={14} className="text-primary-1"/>}
-                 {currentQuestion?.type === 'multiple_choice' && <Type size={14} className="text-primary-1"/>}
-                 {currentQuestion?.type === 'essay' && <FileText size={14} className="text-primary-1"/>}
-                 <span className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
-                   {currentQuestion?.type?.replace('_', ' ')} — Question {currentIdx + 1}
-                 </span>
-               </div>
-               
-               {userAnswers[currentQuestion?._id] && (
-                 <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-4 py-2 rounded-xl">
-                   <CheckCircle2 size={14} /> Saved
-                 </div>
-               )}
-            </div>
-            
-            {/* Dynamic Content Rendering */}
-            {renderMediaContent(currentQuestion)}
-            {renderAnswerOptions(currentQuestion)}
-            
-          </FadeInItem>
-
-          {/* BOTTOM NAVIGATION */}
-          <div className="flex justify-between items-center px-4 mb-10">
-            <button 
-              disabled={currentIdx === 0}
-              onClick={() => setCurrentIdx(prev => prev - 1)}
-              className="flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all disabled:opacity-0"
-            >
-              <ChevronLeft size={20} /> Prev Question
-            </button>
-            
-            <button 
-              onClick={() => currentIdx === questions.length - 1 ? setShowConfirm(true) : setCurrentIdx(prev => prev + 1)}
-              className="group flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-primary-1 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all active:scale-95"
-            >
-              {currentIdx === questions.length - 1 ? 'Complete Quiz' : 'Next Question'} 
-              <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-
-        {/* QUESTION NAVIGATION SIDEBAR */}
-        <div className="hidden lg:block">
-          <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 shadow-xl border border-slate-100 dark:border-white/5 sticky top-32">
-            <h4 className="font-black text-slate-400 text-[10px] uppercase tracking-[0.3em] mb-10 text-center italic">Question Grid</h4>
-            <div className="grid grid-cols-4 gap-3">
-              {questions.map((q, idx) => {
-                const isAnswered = !!userAnswers[q._id];
-                const isCurrent = idx === currentIdx;
-                return (
-                  <button
-                    key={q._id}
-                    onClick={() => setCurrentIdx(idx)}
-                    className={`aspect-square rounded-2xl flex items-center justify-center text-xs font-black transition-all transform ${
-                      isCurrent ? 'bg-primary-1 text-white shadow-xl shadow-primary-1/30 scale-110 z-10' :
-                      isAnswered ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 
-                      'bg-slate-50 dark:bg-white/5 text-slate-300 dark:text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    {idx + 1}
-                  </button>
-                );
-              })}
-            </div>
-            
-            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-white/5 space-y-3">
-                <div className="flex justify-between text-[9px] font-black uppercase text-slate-400 tracking-tighter">
-                    <span>Answered</span>
-                    <span className="text-emerald-500">{Object.keys(userAnswers).length} / {questions.length}</span>
-                </div>
-                <div className="w-full h-1.5 bg-slate-50 dark:bg-white/5 rounded-full overflow-hidden">
+      {/* Render sisanya hanya jika currentQuestion ada */}
+          {currentQuestion && (
+            <>
+            {/* STICKY HEADER */}
+            <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4">
+              <div className="max-w-6xl mx-auto flex justify-between items-center gap-6">
+                <div className="flex items-center gap-6 flex-1">
+                  <div className="hidden md:block">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
+                    <p className="text-sm font-black text-slate-900 dark:text-white">{currentIdx + 1} / {questions.length}</p>
+                  </div>
+                  <div className="h-2.5 flex-1 max-w-xs bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-emerald-500 transition-all duration-1000" 
-                      style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
+                      className="h-full bg-primary-1 transition-all duration-700 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
+                      style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
                     />
+                  </div>
                 </div>
-            </div>
-          </FadeInItem>
-        </div>
-      </FadeInContainer>
+
+                <div className="flex items-center gap-4">
+                  <div className={`px-5 py-3 rounded-2xl border-2 flex items-center gap-3 transition-all ${
+                    timeLeft < 60 ? 'bg-red-500/10 border-red-500 text-red-500 animate-pulse' : 'bg-slate-900 dark:bg-primary-1/10 text-white dark:text-primary-1 border-transparent'
+                  }`}>
+                    <Clock size={18} />
+                    <span className="font-mono font-black text-xl leading-none tracking-tighter">{formatTime(timeLeft)}</span>
+                  </div>
+                  
+                  <button 
+                    onClick={() => setShowConfirm(true)}
+                    className="bg-primary-1 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary-1/20"
+                  >
+                    Finish
+                  </button>
+                </div>
+              </div>
+            </header>
+
+            <FadeInContainer className="flex-1 max-w-6xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
+              
+              {/* MAIN QUESTION AREA */}
+              <div className="lg:col-span-3 flex flex-col gap-6">
+                <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3.5rem] p-8 md:p-14 shadow-2xl shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-white/5 relative overflow-hidden">
+                  
+                  {/* Type Indicator */}
+                  <div className="flex items-center justify-between mb-12">
+                    <div className="flex items-center gap-3 px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
+                      {currentQuestion?.type === 'image_options' && <ImageIcon size={14} className="text-primary-1"/>}
+                      {currentQuestion?.type === 'multiple_choice' && <Type size={14} className="text-primary-1"/>}
+                      {currentQuestion?.type === 'essay' && <FileText size={14} className="text-primary-1"/>}
+                      <span className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
+                        {currentQuestion?.type?.replace('_', ' ')} — Question {currentIdx + 1}
+                      </span>
+                    </div>
+                    
+                    {userAnswers[currentQuestion?._id] && (
+                      <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-4 py-2 rounded-xl">
+                        <CheckCircle2 size={14} /> Saved
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Dynamic Content Rendering */}
+                  {renderMediaContent(currentQuestion)}
+                  {renderAnswerOptions(currentQuestion)}
+                  
+                </FadeInItem>
+
+                {/* BOTTOM NAVIGATION */}
+                <div className="flex justify-between items-center px-4 mb-10">
+                  <button 
+                    disabled={currentIdx === 0}
+                    onClick={() => setCurrentIdx(prev => prev - 1)}
+                    className="flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all disabled:opacity-0"
+                  >
+                    <ChevronLeft size={20} /> Prev Question
+                  </button>
+                  
+                  <button 
+                    onClick={() => currentIdx === questions.length - 1 ? setShowConfirm(true) : setCurrentIdx(prev => prev + 1)}
+                    className="group flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-primary-1 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all active:scale-95"
+                  >
+                    {currentIdx === questions.length - 1 ? 'Complete Quiz' : 'Next Question'} 
+                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
+              </div>
+
+              {/* QUESTION NAVIGATION SIDEBAR */}
+              <div className="hidden lg:block">
+                <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 shadow-xl border border-slate-100 dark:border-white/5 sticky top-32">
+                  <h4 className="font-black text-slate-400 text-[10px] uppercase tracking-[0.3em] mb-10 text-center italic">Question Grid</h4>
+                  <div className="grid grid-cols-4 gap-3">
+                    {questions.map((q, idx) => {
+                      const isAnswered = !!userAnswers[q._id];
+                      const isCurrent = idx === currentIdx;
+                      return (
+                        <button
+                          key={q._id}
+                          onClick={() => setCurrentIdx(idx)}
+                          className={`aspect-square rounded-2xl flex items-center justify-center text-xs font-black transition-all transform ${
+                            isCurrent ? 'bg-primary-1 text-white shadow-xl shadow-primary-1/30 scale-110 z-10' :
+                            isAnswered ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 
+                            'bg-slate-50 dark:bg-white/5 text-slate-300 dark:text-slate-600 hover:bg-slate-100'
+                          }`}
+                        >
+                          {idx + 1}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  <div className="mt-12 pt-8 border-t border-slate-100 dark:border-white/5 space-y-3">
+                      <div className="flex justify-between text-[9px] font-black uppercase text-slate-400 tracking-tighter">
+                          <span>Answered</span>
+                          <span className="text-emerald-500">{Object.keys(userAnswers).length} / {questions.length}</span>
+                      </div>
+                      <div className="w-full h-1.5 bg-slate-50 dark:bg-white/5 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-emerald-500 transition-all duration-1000" 
+                            style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
+                          />
+                      </div>
+                  </div>
+                </FadeInItem>
+              </div>
+            </FadeInContainer>
+
+            </>
+      )}
     </div>
   );
 }
-

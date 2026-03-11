@@ -93,7 +93,7 @@ export default function QuizResultPage() {
     <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 pb-24 font-sans transition-colors duration-300">
       
       {/* NAVBAR */}
-      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4 sticky top-0 z-50">
+      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4 sticky top-0 z-30">
         <div className="max-w-5xl mx-auto flex justify-between items-center">
           <button 
             onClick={() => router.push(`/dashboard/modules/bab/${bab_key?._id || bab_key?.id}`)}

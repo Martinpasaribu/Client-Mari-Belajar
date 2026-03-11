@@ -37,13 +37,13 @@ export default function AppIcon({
   return (
     <div className={`flex items-center justify-center ${className}`}>
       <div 
-        className={`relative flex items-center justify-center ${isCircle ? 'overflow-hidden' : ''}`}
+        className={`relative md:w-30 flex items-center justify-center ${isCircle ? 'overflow-hidden' : ''}`}
         style={{ 
           // Perbaikan: Gunakan tinggi yang lebih kecil di mobile (misal 45px) 
           // agar tidak "meledak" atau melebihi elemen induk/navbar.
-          width: isCircle ? '45px' : 'auto', 
+          // width: isCircle ? '45px' : 'auto', 
           height: '60px', 
-          minWidth: isCircle ? '65px' : '120px',
+          minWidth: isCircle ? '55px' : '55px',
           aspectRatio: isCircle ? '1/1' : 'auto' 
         }}
       >

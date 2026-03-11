@@ -14,11 +14,14 @@ import { FadeInDown } from "@/components/animations/MotionWrapper";
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MobileMenu from "./Burger";
+import { useLogout } from "@/hooks/useLogout";
+import { LogoutLoading } from "@/components/modals/LogoutLoading";
 
 export default function Navbar({ variant = "guest" }: { variant?: "guest" | "dashboard" }) {
   const { user, logout } = useAuthStore();
   const router = useRouter();
-
+  const { handleLogout, isLoading } = useLogout();
+  
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -43,11 +46,7 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
 
-  const handleLogout = () => {
-    logout();
-    Cookies.remove('token');
-    router.push('/auth/login');
-  };
+
 
   const toggleTheme = () => {
     if (theme === "light") setTheme("dark");
@@ -65,16 +64,26 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
   return (
     <>
       <nav className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 py-0 shadow-lg shadow-slate-200/20" : "bg-transparent border-b border-transparent py-2"}`}>
+       
+       {isLoading && <LogoutLoading />}
+
         <FadeInDown className={`${variant === "dashboard" ? "px-6" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"}`}>
           <div className="flex justify-between items-center h-16 md:h-20">
             
-            <div className="flex items-center gap-4">
+            <div className="w-full flex justify-between items-center md:items-center gap-4">
               <button onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden p-2 rounded-xl bg-slate-100 dark:bg-dark-bg2 text-slate-600 dark:text-slate-300">
                 <Menu size={20} />
               </button>
-              <Link href="/" className="flex justify-center items-center transition-all hover:opacity-80 active:scale-95">
-                <AppIcon variant="rectangle" width={isScrolled ? 120 : 140} height={40} className="transition-all duration-500"/>
-              </Link>
+
+                  {!user ? (
+                      <Link href="/" className="flex transition-all hover:opacity-80 active:scale-95">
+                        <AppIcon variant="circle" width={isScrolled ? 80 : 70} height={70} className="transition-all duration-500"/>
+                      </Link>
+                  ):(
+                    <div> 
+                      
+                      </div>
+                  )}
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
@@ -127,7 +136,7 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-1 gap-0.5">
+                          <div className="grid grid-cols-1 gap-0.5 z-40">
                             <DropdownItem icon={<LayoutDashboard size={14}/>} label="Dashboard" href="/dashboard/main" />
                             <DropdownItem icon={<User size={14}/>} label="Profil" href="/dashboard/profile" />
                             <DropdownItem icon={<Settings size={14}/>} label="Setting" href="/dashboard/settings" />

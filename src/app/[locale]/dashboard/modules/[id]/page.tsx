@@ -6,6 +6,8 @@ import api from "@/lib/axios";
 import Link from "next/link";
 import { ChevronRight, Book, ArrowLeft, LayoutGrid, Info, Loader2, Sparkles } from "lucide-react";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import { MainLoading } from "@/components/modals/MainLoading";
+import { MainEmpty } from "@/components/modals/MainEmpty";
 
 export default function BabListPage() {
   const { id } = useParams();
@@ -28,26 +30,27 @@ export default function BabListPage() {
     fetchBab();
   }, [id]);
 
+
   if (loading) return (
-    <div className="flex h-[80vh] flex-col items-center justify-center gap-4">
-      <Loader2 className="animate-spin text-primary-1" size={40} />
-      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">Memuat Kurikulum</p>
-    </div>
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={loading} title="module" />
+    </>
+      
   );
 
   if (!moduleData) return (
-    <div className="flex h-[80vh] flex-col items-center justify-center gap-4 bg-bg1">
-      <div className="p-6 rounded-full bg-slate-100 dark:bg-slate-800">
-        <Info className="text-slate-300" size={48} />
-      </div>
-      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Data tidak ditemukan.</p>
-      <button onClick={() => router.back()} className="text-primary-1 font-black text-sm hover:underline uppercase"> Kembali </button>
-    </div>
+      <MainEmpty 
+        title="Modul Tidak Ditemukan" 
+        description="Sepertinya modul yang kamu cari tidak tersedia di katalog kami saat ini."
+      />
   );
 
   return (
     <FadeInContainer className="space-y-10 pb-20">
       
+    
+
       {/* HERO HEADER SECTION */}
       <FadeInItem>
         <div className="relative overflow-hidden bg-primary-2 rounded-[3rem] p-4 px-6 md:p-6 md:px-10 shadow-2xl">

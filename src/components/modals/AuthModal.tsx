@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -57,7 +58,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   className="group flex w-full items-center justify-between rounded-2xl border-2 border-bg2 dark:border-white/5 bg-white dark:bg-dark-bg1 p-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 transition-all hover:border-primary-1/30 dark:hover:border-dark-primary1/30 active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" className="h-5 w-5" alt="google" />
+                    <img src="/assets/icon/google.png" className="h-5 w-5" alt="G" />
                     <span>Masuk dengan Google</span>
                   </div>
                   <ChevronRight size={14} className="text-slate-300 group-hover:text-primary-1 dark:group-hover:text-dark-primary1 transition-colors" />
