@@ -14,7 +14,11 @@ import {
   Volume2, 
   ImageIcon, 
   Type, 
-  FileText 
+  FileText, 
+  Bookmark,
+  ArrowRight,
+  BookOpen,
+  LayoutGrid
 } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
@@ -23,6 +27,7 @@ import { getErrorMessage } from '@/lib/utils';
 import { MainLoading } from '@/components/modals/MainLoading';
 import { useAuthStore } from '@/store/useAuthStore';
 import { ActiveAttemptModal } from '@/components/modals/ActiveAttemptModal';
+import { motion } from 'framer-motion';
 
 export default function QuizAttemptPage() {
   const router = useRouter();
@@ -48,6 +53,8 @@ export default function QuizAttemptPage() {
   isOpen: false,
   babId: ''
 });
+
+const [isGridOpen, setIsGridOpen] = useState(false);
 
   useEffect(() => {
     answersRef.current = userAnswers;
@@ -293,7 +300,7 @@ export default function QuizAttemptPage() {
           <button
             key={opt.label}
             onClick={() => handleSelectOption(opt.label)}
-            className={`group flex items-center gap-5 p-6 rounded-[2.5rem] border-2 transition-all text-left ${
+            className={`group flex items-center gap-5 p-4 rounded-[2.5rem] border-2 transition-all text-left ${
               isSelected(opt.label) 
                 ? 'border-primary-1 bg-primary-1/5 shadow-inner' 
                 : 'border-slate-50 dark:border-white/5 bg-slate-50 dark:bg-white/5 hover:border-slate-200'
@@ -340,135 +347,192 @@ export default function QuizAttemptPage() {
         description="Jawaban Anda akan dikirim untuk penilaian. Pastikan tidak ada soal yang terlewat."
       />
 
-      {/* Render sisanya hanya jika currentQuestion ada */}
-          {currentQuestion && (
-            <>
-            {/* STICKY HEADER */}
-            <header className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4">
-              <div className="max-w-6xl mx-auto flex justify-between items-center gap-6">
-                <div className="flex items-center gap-6 flex-1">
-                  <div className="hidden md:block">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progress</span>
-                    <p className="text-sm font-black text-slate-900 dark:text-white">{currentIdx + 1} / {questions.length}</p>
-                  </div>
-                  <div className="h-2.5 flex-1 max-w-xs bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-primary-1 transition-all duration-700 shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" 
-                      style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }}
-                    />
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                  <div className={`px-5 py-3 rounded-2xl border-2 flex items-center gap-3 transition-all ${
-                    timeLeft < 60 ? 'bg-red-500/10 border-red-500 text-red-500 animate-pulse' : 'bg-slate-900 dark:bg-primary-1/10 text-white dark:text-primary-1 border-transparent'
-                  }`}>
-                    <Clock size={18} />
-                    <span className="font-mono font-black text-xl leading-none tracking-tighter">{formatTime(timeLeft)}</span>
-                  </div>
-                  
-                  <button 
-                    onClick={() => setShowConfirm(true)}
-                    className="bg-primary-1 text-white px-8 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl shadow-primary-1/20"
-                  >
-                    Finish
-                  </button>
-                </div>
+    {currentQuestion && (
+      <div className="min-h-screen bg-[#FDFDFD] dark:bg-[#080B14] transition-colors duration-500">
+    
+        {/* 1. ULTRA-SLEEK NAVIGATION BAR */}
+        {/* Pastikan top-0 dan z-index sudah tinggi */}
+        <header className="sticky top-0 z-40 w-full border-b border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-[#080B14]/80 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 md:h-20 flex items-center justify-between">
+            
+            {/* Progress Ring */}
+            <div className="flex items-center gap-3">
+              <div className="relative flex items-center justify-center w-9 h-9 md:w-11 md:h-11">
+                <svg className="w-full h-full transform -rotate-90">
+                  <circle cx="50%" cy="50%" r="16" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-slate-100 dark:text-white/5" />
+                  <circle cx="50%" cy="50%" r="16" stroke="currentColor" strokeWidth="3" fill="transparent" 
+                    strokeDasharray={100}
+                    strokeDashoffset={100 - ((currentIdx + 1) / questions.length) * 100}
+                    strokeLinecap="round"
+                    className="text-primary-1 transition-all duration-700 ease-in-out" 
+                  />
+                </svg>
+                <span className="absolute text-[10px] font-black dark:text-white">{currentIdx + 1}</span>
               </div>
-            </header>
+              <div className="hidden md:block">
+                <h2 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Mathematics</h2>
+                <p className="text-xs font-bold text-slate-900 dark:text-white leading-none">Final Examination</p>
+              </div>
+            </div>
 
-            <FadeInContainer className="flex-1 max-w-6xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-4 gap-8">
-              
-              {/* MAIN QUESTION AREA */}
-              <div className="lg:col-span-3 flex flex-col gap-6">
-                <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3.5rem] p-8 md:p-14 shadow-2xl shadow-slate-200/40 dark:shadow-none border border-slate-100 dark:border-white/5 relative overflow-hidden">
-                  
-                  {/* Type Indicator */}
-                  <div className="flex items-center justify-between mb-12">
-                    <div className="flex items-center gap-3 px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
-                      {currentQuestion?.type === 'image_options' && <ImageIcon size={14} className="text-primary-1"/>}
-                      {currentQuestion?.type === 'multiple_choice' && <Type size={14} className="text-primary-1"/>}
-                      {currentQuestion?.type === 'essay' && <FileText size={14} className="text-primary-1"/>}
-                      <span className="text-[10px] font-black uppercase tracking-[0.25em] text-slate-500">
-                        {currentQuestion?.type?.replace('_', ' ')} — Question {currentIdx + 1}
-                      </span>
+            {/* Timer */}
+            <div className={`px-4 py-1.5 rounded-full flex items-center gap-2 border transition-all ${
+              timeLeft < 60 ? 'bg-red-500 text-white border-transparent animate-pulse shadow-lg shadow-red-500/20' : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300'
+            }`}>
+              <Clock size={14} />
+              <span className="font-mono font-bold text-sm tabular-nums tracking-tighter">{formatTime(timeLeft)}</span>
+            </div>
+
+            {/* Action Button - Bouncy Effect */}
+            <button 
+              onClick={() => setShowConfirm(true)}
+              className="bg-primary-1 text-white px-5 py-2 md:px-7 md:py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 hover:brightness-110 active:scale-90 active:translate-y-1 shadow-lg shadow-primary-1/25"
+            >
+              Submit
+            </button>
+          </div>
+        </header>
+
+        <main className="max-w-7xl mx-auto px-0 md:px-6 py-0 md:py-8 lg:py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 md:gap-8">
+            
+            {/* 2. MAIN CONTENT AREA */}
+            <section className="lg:col-span-9">
+              <div className="bg-white dark:bg-slate-900/40 md:rounded-[2.5rem] min-h-[calc(100vh-120px)] md:min-h-[600px] flex flex-col border-x md:border border-slate-200/50 dark:border-white/5 shadow-sm overflow-hidden relative">
+                
+                {/* Mobile Header Info */}
+                <div className="md:hidden px-6 py-4 flex items-center justify-between bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Question {currentIdx + 1} of {questions.length}</span>
+                  {userAnswers[currentQuestion?._id] && (
+                    <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase">
+                        <CheckCircle2 size={12} /> Answered
+                    </div>
+                  )}
+                </div>
+
+                {/* Question Body */}
+                <div className="py-6 px-3 md:p-16 flex-1 overflow-y-auto scrollbar-hide">
+                  <div className="max-w-3xl mx-auto">
+                    <div className="flex items-center gap-2 mb-8">
+                        <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase tracking-widest border border-slate-200/50 dark:border-white/5">
+                          {currentQuestion?.type?.replace('_', ' ')}
+                        </span>
                     </div>
                     
-                    {userAnswers[currentQuestion?._id] && (
-                      <div className="flex items-center gap-2 text-[10px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-4 py-2 rounded-xl">
-                        <CheckCircle2 size={14} /> Saved
-                      </div>
-                    )}
+                    <div className="text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {renderMediaContent(currentQuestion)}
+                        <div className="mt-10 md:mt-14 space-y-4">
+                          {renderAnswerOptions(currentQuestion)}
+                        </div>
+                    </div>
                   </div>
-                  
-                  {/* Dynamic Content Rendering */}
-                  {renderMediaContent(currentQuestion)}
-                  {renderAnswerOptions(currentQuestion)}
-                  
-                </FadeInItem>
+                </div>
 
-                {/* BOTTOM NAVIGATION */}
-                <div className="flex justify-between items-center px-4 mb-10">
-                  <button 
-                    disabled={currentIdx === 0}
-                    onClick={() => setCurrentIdx(prev => prev - 1)}
-                    className="flex items-center gap-3 px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all disabled:opacity-0"
-                  >
-                    <ChevronLeft size={20} /> Prev Question
-                  </button>
-                  
-                  <button 
-                    onClick={() => currentIdx === questions.length - 1 ? setShowConfirm(true) : setCurrentIdx(prev => prev + 1)}
-                    className="group flex items-center gap-4 px-10 py-5 bg-slate-900 dark:bg-primary-1 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl hover:scale-105 transition-all active:scale-95"
-                  >
-                    {currentIdx === questions.length - 1 ? 'Complete Quiz' : 'Next Question'} 
-                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
+                {/* 3. DOCK-STYLE NAVIGATION */}
+                <div className="sticky bottom-0 z-40 bg-white/80 dark:bg-[#080B14]/80 backdrop-blur-xl border-t border-slate-100 dark:border-white/5 p-4 md:p-8">
+                  <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+                    <button 
+                      disabled={currentIdx === 0}
+                      onClick={() => setCurrentIdx(prev => prev - 1)}
+                      className="p-4 rounded-2xl bg-slate-100 dark:bg-white/5 text-slate-500 transition-all active:scale-75 active:bg-slate-200 disabled:opacity-0"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+
+                    <div className="flex-1 flex gap-2">
+                      {/* Grid Trigger - Mobile App Style */}
+                      <button 
+                        onClick={() => setIsGridOpen(true)}
+                        className="lg:hidden flex-1 py-4 px-2 rounded-2xl border border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 bg-white dark:bg-transparent active:scale-95 active:bg-slate-50 transition-all flex items-center justify-center gap-2"
+                      >
+                        <LayoutGrid size={16} /> Soal
+                      </button>
+                      
+                      <button 
+                        onClick={() => currentIdx === questions.length - 1 ? setShowConfirm(true) : setCurrentIdx(prev => prev + 1)}
+                        className="flex-[2] md:flex-none md:px-12 py-4 bg-slate-900 dark:bg-primary-1 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl transition-all active:scale-90 active:translate-y-1 flex items-center justify-center gap-2"
+                      >
+                        {currentIdx === questions.length - 1 ? 'Finish Test' : 'Next Question'}
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </section>
 
-              {/* QUESTION NAVIGATION SIDEBAR */}
-              <div className="hidden lg:block">
-                <FadeInItem className="bg-white dark:bg-slate-900 rounded-[3rem] p-8 shadow-xl border border-slate-100 dark:border-white/5 sticky top-32">
-                  <h4 className="font-black text-slate-400 text-[10px] uppercase tracking-[0.3em] mb-10 text-center italic">Question Grid</h4>
-                  <div className="grid grid-cols-4 gap-3">
-                    {questions.map((q, idx) => {
-                      const isAnswered = !!userAnswers[q._id];
-                      const isCurrent = idx === currentIdx;
-                      return (
+            {/* 4. SIDEBAR - Desktop Grid */}
+            <aside className="hidden lg:block lg:col-span-3">
+              <div className="sticky top-28">
+                <div className="bg-white dark:bg-slate-900/40 rounded-[2.5rem] p-8 border border-slate-200/50 dark:border-white/5 shadow-sm">
+                    <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8 text-center">Navigator</h3>
+                    <div className="grid grid-cols-4 gap-2">
+                      {questions.map((q, idx) => (
                         <button
                           key={q._id}
                           onClick={() => setCurrentIdx(idx)}
-                          className={`aspect-square rounded-2xl flex items-center justify-center text-xs font-black transition-all transform ${
-                            isCurrent ? 'bg-primary-1 text-white shadow-xl shadow-primary-1/30 scale-110 z-10' :
-                            isAnswered ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 
-                            'bg-slate-50 dark:bg-white/5 text-slate-300 dark:text-slate-600 hover:bg-slate-100'
+                          className={`aspect-square rounded-xl text-[11px] font-black transition-all active:scale-75 ${
+                            idx === currentIdx 
+                              ? 'bg-primary-1 text-white shadow-lg shadow-primary-1/25 scale-110 z-10' 
+                              : !!userAnswers[q._id]
+                                ? 'bg-emerald-500 text-white'
+                                : 'bg-slate-50 dark:bg-white/5 text-slate-400 hover:bg-slate-100'
                           }`}
                         >
                           {idx + 1}
                         </button>
-                      );
-                    })}
-                  </div>
-                  
-                  <div className="mt-12 pt-8 border-t border-slate-100 dark:border-white/5 space-y-3">
-                      <div className="flex justify-between text-[9px] font-black uppercase text-slate-400 tracking-tighter">
-                          <span>Answered</span>
-                          <span className="text-emerald-500">{Object.keys(userAnswers).length} / {questions.length}</span>
-                      </div>
-                      <div className="w-full h-1.5 bg-slate-50 dark:bg-white/5 rounded-full overflow-hidden">
-                          <div 
-                            className="h-full bg-emerald-500 transition-all duration-1000" 
-                            style={{ width: `${(Object.keys(userAnswers).length / questions.length) * 100}%` }}
-                          />
-                      </div>
-                  </div>
-                </FadeInItem>
+                      ))}
+                    </div>
+                </div>
               </div>
-            </FadeInContainer>
+            </aside>
+          </div>
+        </main>
 
-            </>
-      )}
+        {/* 5. MOBILE GRID DRAWER (The "Interesting" Part) */}
+        {isGridOpen && (
+          <div className="fixed inset-0 z-[100] lg:hidden">
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsGridOpen(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" 
+            />
+            {/* Sheet */}
+            <motion.div 
+              initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-900 rounded-t-[3rem] p-8 pb-12 shadow-2xl border-t border-white/10"
+            >
+              <div className="w-12 h-1.5 bg-slate-200 dark:bg-white/10 rounded-full mx-auto mb-8" />
+              <h3 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mb-8 text-center">Select Question</h3>
+              <div className="grid grid-cols-5 gap-3 max-h-[40vh] overflow-y-auto p-2 scrollbar-hide">
+                {questions.map((q, idx) => (
+                  <button
+                    key={q._id}
+                    onClick={() => { setCurrentIdx(idx); setIsGridOpen(false); }}
+                    className={`aspect-square rounded-2xl text-xs font-black transition-all active:scale-75 ${
+                      idx === currentIdx ? 'bg-primary-1 text-white shadow-xl' :
+                      !!userAnswers[q._id] ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400'
+                    }`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+              </div>
+              <button 
+                onClick={() => setIsGridOpen(false)}
+                className="w-full mt-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400"
+              >
+                Close Navigator
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </div>
+    )}
+        
     </div>
   );
 }

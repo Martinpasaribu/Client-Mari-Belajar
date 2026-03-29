@@ -15,7 +15,12 @@ import {
   AlertCircle,
   Sparkles,
   UserCircle2,
-  Volume2
+  Volume2,
+  LayoutGrid,
+  Coffee,
+  Frown,
+  ThumbsUp,
+  Star
 } from 'lucide-react';
 import api from '@/lib/axios';
 import { useAuthStore } from '@/store/useAuthStore';
@@ -30,6 +35,62 @@ export default function GuestQuizResultPage() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+const getRating = (score: number) => {
+  // 1. Luar Biasa (Skor Sempurna atau sangat tinggi)
+  if (score >= 90) {
+    return { 
+      label: "Luar Biasa", 
+      color: "text-indigo-500", 
+      stroke: "#6366F1", 
+      bgColor: "bg-indigo-500", 
+      sub: "Masterpiece! Kamu benar-benar menguasai materi ini.",
+      icon: <Trophy size={20} /> 
+    };
+  }
+  // 2. Sangat Baik
+  if (score >= 75) {
+    return { 
+      label: "Sangat Baik", 
+      color: "text-emerald-500", 
+      stroke: "#10B981", 
+      bgColor: "bg-emerald-500", 
+      sub: "Keren banget! Sedikit lagi menuju sempurna.",
+      icon: <Star size={20} /> 
+    };
+  }
+  // 3. Baik
+  if (score >= 60) {
+    return { 
+      label: "Baik", 
+      color: "text-blue-500", 
+      stroke: "#3B82F6", 
+      bgColor: "bg-blue-500", 
+      sub: "Kerja bagus! Pertahankan performa kamu.",
+      icon: <ThumbsUp size={20} /> 
+    };
+  }
+  // 4. Cukup
+  if (score > 0) {
+    return { 
+      label: "Cukup", 
+      color: "text-orange-500", 
+      stroke: "#F97316", 
+      bgColor: "bg-orange-500", 
+      sub: "Boleh juga, tapi kamu pasti bisa lebih dari ini.",
+      icon: <Coffee size={20} /> 
+    };
+  }
+  // 5. Wkwk kenapa salah semua (Skor 0)
+  return { 
+    label: "wkwk kenapa salah semua", 
+    color: "text-red-500", 
+    stroke: "#EF4444", 
+    bgColor: "bg-red-500", 
+    sub: "Jangan menyerah, coba ulangi lagi pelan-pelan ya!",
+    icon: <Frown size={20} /> 
+  };
+};
 
   useEffect(() => {
     if (!attemptId) return;
@@ -109,7 +170,7 @@ export default function GuestQuizResultPage() {
       </div>
 
       <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4 sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
+        <div className="max-w-4xl mx-auto flex justify-between items-center gap-5">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-400 hover:text-primary-1 font-black text-[10px] uppercase tracking-widest transition-all">
             <ArrowLeft size={16} /> Kembali
           </button>
@@ -120,43 +181,82 @@ export default function GuestQuizResultPage() {
         </div>
       </nav>
 
-      <FadeInContainer className="max-w-4xl mx-auto p-6">
+      <FadeInContainer className="max-w-4xl mx-auto py-6 px-3 md:px-6">
+
         {/* SCORE HERO */}
-        <ScaleIn className="bg-white dark:bg-dark-bg2 rounded-[3.5rem] p-10 md:p-14 border border-slate-100 dark:border-white/5 relative overflow-hidden mb-16 shadow-2xl shadow-slate-200/50 dark:shadow-none">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-primary-1/5 rounded-full blur-[100px] -mr-48 -mt-48" />
+        <ScaleIn className="bg-white dark:bg-[#0B0F1A] rounded-[2.5rem] md:rounded-[3.5rem] p-8 md:p-14 border border-slate-200/50 dark:border-white/5 relative overflow-hidden mb-16 shadow-2xl shadow-slate-200/20 dark:shadow-none transition-all duration-500">
           
-          <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
-            <div className="relative flex items-center justify-center w-52 h-52">
-              <svg className="w-full h-full transform -rotate-90">
-                <circle cx="104" cy="104" r="94" className="stroke-slate-100 dark:stroke-neutral-800" strokeWidth="12" fill="transparent" />
-                <circle
-                  cx="104" cy="104" r="94" 
-                  className="text-primary-1 transition-all duration-1000 ease-out"
-                  stroke="currentColor" strokeWidth="12" fill="transparent"
-                  strokeDasharray={590} strokeDashoffset={590 - (590 * (total_score || 0)) / 100}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute flex flex-col items-center">
-                <span className="text-6xl font-black text-slate-900 dark:text-white tracking-tighter italic">{total_score}</span>
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Skor Akhir</span>
+          {/* Efek Cahaya Belakang Dinamis berdasarkan skor */}
+          <div className={`absolute top-0 right-0 w-96 h-96 ${getRating(total_score || 0).bgColor}/5 rounded-full blur-[100px] -mr-48 -mt-48 transition-colors duration-1000`} />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-center gap-10 md:gap-16">
+            
+            {/* Progress Circle & Rating Badge Overlay */}
+            <div className="relative flex items-center justify-center group shrink-0">
+              <div className="relative w-56 h-56 md:w-64 md:h-64 flex items-center justify-center transform group-hover:scale-105 transition-transform duration-500">
+                <svg className="w-full h-full transform -rotate-90">
+                  {/* Background Track */}
+                  <circle cx="50%" cy="50%" r="44%" className="stroke-slate-100 dark:stroke-white/5" strokeWidth="12" fill="transparent" />
+                  
+                  {/* Progress Bar - Menggunakan stroke-current agar sinkron dengan text color */}
+                  <circle
+                    cx="50%" cy="50%" r="44%" 
+                    className={`${getRating(total_score || 0).color} stroke-current transition-all duration-1000 ease-out`}
+                    strokeWidth="12" 
+                    fill="transparent"
+                    strokeDasharray={590} 
+                    strokeDashoffset={590 - (590 * (total_score || 0)) / 100}
+                    strokeLinecap="round"
+                  />
+                </svg>
+                
+                <div className="absolute flex flex-col items-center">
+                  <span className="text-7xl font-black text-slate-900 dark:text-white tracking-tighter italic drop-shadow-sm leading-none">
+                    {total_score}
+                  </span>
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3 ml-1">Score</span>
+                </div>
+              </div>
+
+              {/* RATING BADGE - Floating on the circle */}
+              <div className={`absolute -bottom-2 md:-bottom-4 px-6 py-2.5 rounded-2xl flex justify-center items-center ${getRating(total_score || 0).bgColor} text-white shadow-xl shadow-current/20 gap-2 animate-bounce transition-all duration-500`}>
+                {getRating(total_score || 0).icon}
+                <span className="text-xs font-black uppercase tracking-wider">{getRating(total_score || 0).label}</span>
               </div>
             </div>
 
+            {/* Text Content */}
             <div className="flex-1 text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-1/10 text-primary-1 rounded-full mb-4 border border-primary-1/20">
-                <Trophy size={14} />
-                <span className="text-[10px] font-black uppercase tracking-wider">Latihan Tamu Selesai</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 rounded-full mb-6 border border-slate-200/50 dark:border-white/5">
+                <LayoutGrid size={14} />
+                <span className="text-[9px] font-black uppercase tracking-widest">Performance Review</span>
               </div>
-              <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-6 leading-tight uppercase italic">
-                {total_score >= 70 ? "Hasil Yang Hebat!" : "Teruslah Belajar!"}
+
+              <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-3 leading-tight uppercase italic tracking-tight">
+                {getRating(total_score || 0).label === "wkwk kenapa salah semua" ? "Aduhh..." : getRating(total_score || 0).label + "!"}
               </h2>
+              <p className="text-slate-500 dark:text-slate-400 font-medium mb-10 text-sm md:text-base max-w-md">
+                {getRating(total_score || 0).sub}
+              </p>
               
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <StatBox label="Benar" value={correct_count} color="text-emerald-500" />
-                <StatBox label="Salah" value={wrong_count} color="text-red-500" />
-                <StatBox label="Kosong" value={skipped_count} color="text-amber-500" />
-                <StatBox label="Waktu" value={`${duration_seconds}s`} color="text-primary-2 dark:text-dark-primary-2" />
+              {/* STAT BOXES - Grid Modern */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <div className="bg-slate-50 dark:bg-white/[0.02] p-4 rounded-2xl border border-slate-100 dark:border-white/5 active:scale-95 transition-all cursor-default group">
+                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Correct</span>
+                    <span className="text-2xl font-black text-emerald-500 group-hover:scale-110 transition-transform block">{correct_count}</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-white/[0.02] p-4 rounded-2xl border border-slate-100 dark:border-white/5 active:scale-95 transition-all cursor-default group">
+                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Wrong</span>
+                    <span className="text-2xl font-black text-red-500 group-hover:scale-110 transition-transform block">{wrong_count}</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-white/[0.02] p-4 rounded-2xl border border-slate-100 dark:border-white/5 active:scale-95 transition-all cursor-default group">
+                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Skipped</span>
+                    <span className="text-2xl font-black text-amber-500 group-hover:scale-110 transition-transform block">{skipped_count}</span>
+                </div>
+                <div className="bg-slate-50 dark:bg-white/[0.02] p-4 rounded-2xl border border-slate-100 dark:border-white/5 active:scale-95 transition-all cursor-default group">
+                    <span className="block text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Time</span>
+                    <span className="text-2xl font-black text-primary-1 group-hover:scale-110 transition-transform block">{duration_seconds}s</span>
+                </div>
               </div>
             </div>
           </div>
@@ -164,7 +264,7 @@ export default function GuestQuizResultPage() {
 
         {/* REVIEW LIST */}
         <div className="space-y-10">
-          <div className="flex items-center justify-between px-4">
+          <div className="flex flex-col gap-3 md:flex-row items-center justify-between px-2 md:px-4">
             <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] flex items-center gap-3 italic">
               <Target size={18} className="text-primary-1" /> Answer Analysis
             </h3>
@@ -179,7 +279,7 @@ export default function GuestQuizResultPage() {
 
             return (
               <FadeInItem key={idx} className="bg-white dark:bg-dark-bg2 rounded-[3rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-xl shadow-slate-200/30 dark:shadow-none">
-                <div className="p-8 md:p-12">
+                <div className="p-6 md:p-8 lg:p-12">
                   <div className="flex justify-between items-center mb-8">
                     <span className="px-5 py-2 bg-bg2 dark:bg-dark-bg1 rounded-2xl text-[10px] font-black text-slate-400 border border-slate-100 dark:border-white/10 uppercase tracking-widest">Soal {idx + 1}</span>
                     <ReviewBadge isCorrect={isCorrect} isSkipped={!userAnswer} />

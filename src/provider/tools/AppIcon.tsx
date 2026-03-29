@@ -42,7 +42,7 @@ export default function AppIcon({
           // Perbaikan: Gunakan tinggi yang lebih kecil di mobile (misal 45px) 
           // agar tidak "meledak" atau melebihi elemen induk/navbar.
           // width: isCircle ? '45px' : 'auto', 
-          height: '60px', 
+          height: '50px', 
           minWidth: isCircle ? '55px' : '55px',
           aspectRatio: isCircle ? '1/1' : 'auto' 
         }}

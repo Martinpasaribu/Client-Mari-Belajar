@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Layers, GraduationCap, ChevronRight, LayoutGrid, Info, Crown } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import api from '@/lib/axios';
+import { MainLoading } from '@/components/modals/MainLoading';
 
 export default function SubCategoryPage() {
   const params = useParams();
@@ -29,12 +30,10 @@ export default function SubCategoryPage() {
   }, [params.id]);
 
   if (isLoading) return (
-    <div className="flex h-screen items-center justify-center bg-bg1">
-      <div className="flex flex-col items-center gap-3">
-        <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary-1 border-t-transparent"></div>
-        <p className="text-slate-400 font-black text-[10px] uppercase tracking-widest animate-pulse">Memuat Materi...</p>
-      </div>
-    </div>
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={isLoading} title="modules" />
+    </>
   );
 
   if (!data) return (
@@ -47,6 +46,7 @@ export default function SubCategoryPage() {
 
   return (
     <div className="min-h-screen bg-bg2 pb-20 transition-colors duration-500">
+      
       {/* Hero Header */}
       <div className="relative overflow-hidden bg-primary-2 pt-12 pb-24 px-6 md:px-12">
         <div className="absolute top-[-10%] right-[-10%] h-64 w-64 rounded-full bg-primary-1/20 blur-[100px]" />
@@ -71,7 +71,7 @@ export default function SubCategoryPage() {
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Modul Materi</span>
               </div>
 
-              <h1 className="mb-6 text-5xl font-black tracking-tighter text-white md:text-6xl italic uppercase">
+              <h1 className="mb-6 text-4xl font-black tracking-tighter text-white md:text-6xl italic uppercase">
                 {data.name}
               </h1>
               <p className="max-w-xl text-lg font-medium leading-relaxed text-slate-300">
@@ -93,60 +93,72 @@ export default function SubCategoryPage() {
       </div>
 
       {/* Sub Categories List */}
-      <div className="relative z-20 mx-auto -mt-12 max-w-5xl px-6">
-        <FadeInContainer className="grid grid-cols-1 gap-5">
+      <div className="relative z-20 mx-auto -mt-8 md:-mt-12 max-w-5xl px-4 md:px-6">
+        <FadeInContainer className="grid grid-cols-1 gap-4 md:gap-5">
           {data.sub_categories?.map((sub: any, idx: number) => (
             <FadeInItem key={sub._id}>
               <div 
                 onClick={() => router.push(`/bab/${sub._id}`)}
-                className="group relative flex items-center gap-6 overflow-hidden rounded-[2.5rem] border border-slate-100 bg-white p-6 shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-primary-1/30 hover:shadow-2xl hover:shadow-primary-2/5 cursor-pointer"
+                className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 overflow-hidden rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-white/5 bg-white dark:bg-dark-bg2 p-5 md:p-6 shadow-sm hover:-translate-y-1 hover:border-primary-1/30 hover:shadow-2xl hover:shadow-primary-1/5 cursor-pointer
+                transition-all duration-300 ease-out hover:bg-white/10 
+                active:scale-95 active:translate-y-0.5 active:shadow-inner
+                "
               >
-                {/* Number Decor */}
-                <div className="hidden sm:flex text-5xl font-black text-primary-2 opacity-[0.03] absolute left-6 group-hover:text-primary-1 group-hover:opacity-10 transition-all duration-500">
+                {/* Number Decor - Hidden on Mobile to save space */}
+                <div className="hidden lg:flex text-6xl font-black text-primary-2 opacity-[0.03] absolute left-6 group-hover:text-primary-1 group-hover:opacity-10 transition-all duration-500 italic">
                   {String(idx + 1).padStart(2, '0')}
                 </div>
 
-                {/* Icon Container */}
-                <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-bg2 transition-all duration-500 group-hover:bg-primary-1 group-hover:shadow-lg group-hover:shadow-primary-1/20">
-                  <Layers className="text-slate-400 transition-colors duration-500 group-hover:text-white" size={24} />
+                {/* Icon Container - Scaled for Mobile */}
+                <div className="relative z-10 flex h-12 w-12 md:h-16 md:w-16 shrink-0 items-center justify-center rounded-xl md:rounded-2xl bg-slate-50 dark:bg-dark-bg1 transition-all duration-500 group-hover:bg-primary-1 group-hover:shadow-lg group-hover:shadow-primary-1/20">
+                  <Layers className="text-slate-400 transition-colors duration-500 group-hover:text-white w-5 h-5 md:w-6 md:h-6" />
                 </div>
                 
-                {/* Content */}
-                <div className="flex-1 relative z-10">
-                  <h4 className="text-xl font-black tracking-tight text-slate-800 transition-colors group-hover:text-primary-2 uppercase">
-                    {sub.name}
-                  </h4>
-                  <div className="mt-1 flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 text-slate-400">
-                      <GraduationCap size={16} className="text-primary-1" />
-                      <span className="text-xs font-bold italic tracking-wide">{sub.sub_description}</span>
+                {/* Content - Full width on Mobile */}
+                <div className="flex-1 relative z-10 w-full">
+                  <div className="flex items-center justify-between sm:justify-start gap-3">
+                    <h4 className="text-lg md:text-xl font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-primary-1 uppercase italic leading-tight">
+                      {sub.name}
+                    </h4>
+                    {/* Mobile Only Chevron indicator */}
+                    <ChevronRight className="sm:hidden text-slate-300 w-5 h-5" />
+                  </div>
+                  
+                  <div className="mt-1 md:mt-2 flex items-center gap-4">
+                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                      <GraduationCap className="text-primary-1 w-4 h-4" />
+                      <span className="text-[10px] md:text-xs font-bold italic tracking-wide line-clamp-1">
+                        {sub.sub_description || "Jelajahi materi pembelajaran lengkap di kategori ini."}
+                      </span>
                     </div>
                   </div>
                 </div>
 
-                {/* Action Button */}
-                <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-slate-300 transition-all duration-500 group-hover:bg-primary-2 group-hover:text-white group-hover:shadow-lg group-hover:border-primary-2">
-                  <ChevronRight size={22} className="transition-transform duration-300 group-hover:translate-x-0.5" />
+                {/* Action Button - Hidden on Mobile, replaced by simple Chevron above */}
+                <div className="hidden sm:flex relative z-10 h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full border border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-dark-bg1 text-slate-300 transition-all duration-500 group-hover:bg-primary-1 group-hover:text-white group-hover:rotate-[-45deg] group-hover:border-primary-1">
+                  <ChevronRight className="w-5 h-5 md:w-6 md:h-6 transition-transform duration-300" />
                 </div>
 
-                <div className="absolute bottom-0 left-0 h-[4px] w-0 bg-primary-1 transition-all duration-500 group-hover:w-full" />
+                {/* Premium Bottom Line Decor */}
+                <div className="absolute bottom-0 left-0 h-[3px] md:h-[4px] w-0 bg-primary-1 transition-all duration-500 group-hover:w-full" />
               </div>
             </FadeInItem>
           ))}
 
-          {/* Empty State */}
+          {/* Empty State - Responsive Height */}
           {(!data.sub_categories || data.sub_categories.length === 0) && (
             <FadeInItem>
-              <div className="flex flex-col items-center justify-center rounded-[3rem] border-2 border-dashed border-slate-200 bg-white py-24 shadow-inner">
-                <div className="mb-4 rounded-full bg-bg2 p-6 text-slate-300 animate-bounce">
-                  <Layers size={40} />
+              <div className="flex flex-col items-center justify-center rounded-[2.5rem] md:rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-white/10 bg-white dark:bg-dark-bg2 py-16 md:py-24 shadow-inner">
+                <div className="mb-4 rounded-full bg-slate-50 dark:bg-dark-bg1 p-5 md:p-6 text-slate-300 animate-pulse">
+                  <Layers className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
-                <p className="text-sm font-black uppercase tracking-widest text-slate-400">No Content Available Yet</p>
+                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 italic">No Content Available Yet</p>
               </div>
             </FadeInItem>
           )}
         </FadeInContainer>
       </div>
+
     </div>
   );
 }

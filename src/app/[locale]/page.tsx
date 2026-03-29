@@ -65,7 +65,7 @@ export default function LandingPage() {
 const stats = [
     { label: "Total Soal", value: formatNumber(statsData.totalQuestions), icon: BookOpen },
     { label: "Pengguna Aktif", value: formatNumber(statsData.totalUsers), icon: Users },
-    { label: "Materi Update", value: "Setiap Hari", icon: Zap },
+    { label: "Materi Update", value: "Ative", icon: Zap },
   ];
 
   const reviews = [
@@ -117,7 +117,10 @@ const stats = [
             </p>
           </FadeInItem>
           <FadeInItem className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group">
+            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group
+                duration-300 ease-out hover:bg-white/10 
+                active:scale-95 active:translate-y-0.5 active:shadow-inner
+            ">
               Mulai Latihan <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <div className="relative w-full sm:w-80">
@@ -142,35 +145,86 @@ const stats = [
       </section>
 
       {/* CATEGORY SECTION */}
-      <section className="py-24 px-6 bg-bg2 dark:bg-dark-bg2/30">
+      <section className="py-24 px-4 md:px-6 bg-[#FDFDFD] dark:bg-[#080B14] overflow-hidden">
         <FadeInContainer className="max-w-7xl mx-auto">
-          <FadeInItem className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-black mb-4">Materi Utama</h2>
-            <p className="text-zinc-500 max-w-xl mx-auto">Pilih kategori besar materi yang ingin Anda kuasai.</p>
+          
+          {/* Header Section dengan Aksentuasi */}
+          <FadeInItem className="text-center mb-20 relative">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-24 bg-primary-1/10 blur-[60px] rounded-full -z-10" />
+            <span className="inline-block px-4 py-1.5 rounded-full bg-primary-1/5 text-primary-1 text-[10px] font-black uppercase tracking-[0.3em] mb-4 border border-primary-1/10">
+              Eksplorasi Materi
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black mb-6 tracking-tighter italic uppercase dark:text-white">
+              Materi <span className="text-primary-1">Utama</span>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto font-medium text-sm md:text-base">
+              Pilih pilar ilmu yang ingin Anda kuasai hari ini dengan kurikulum yang terstruktur.
+            </p>
           </FadeInItem>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {isLoading ? Array(3).fill(0).map((_, i) => (
-              <div key={i} className="h-64 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-[2.5rem]" />
-            )) : categories.map((cat: any) => (
-              <FadeInItem key={cat._id}>
-                <div className="group p-8 rounded-[2.5rem] bg-bg1 dark:bg-dark-bg1 border border-slate-200 dark:border-slate-800 hover:border-primary-1 transition-all shadow-sm">
-                  <div className="w-12 h-12 rounded-xl bg-primary-1 text-white flex items-center justify-center mb-6 shadow-lg shadow-primary-1/20">
-                    <LayoutGrid size={24} />
-                  </div>
-                  <h3 className="text-2xl font-black mb-6 group-hover:text-primary-1 transition-colors">{cat.name}</h3>
-                  <div className="space-y-2">
-                    {subCategories
-                      .filter((sub: any) => sub.category_key === cat._id)
-                      .slice(0, 3)
-                      .map((sub: any) => (
-                        <div key={sub._id} className="flex items-center gap-3 p-3 rounded-xl bg-bg2 dark:bg-dark-bg2 text-sm font-bold border border-transparent hover:border-primary-1/30 transition-all">
-                          <CheckCircle2 size={16} className="text-primary-1" />
-                          <span>{sub.name}</span>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+            {isLoading ? (
+              Array(3).fill(0).map((_, i) => (
+                <div key={i} className="h-[400px] animate-pulse bg-slate-100 dark:bg-white/5 rounded-[3rem]" />
+              ))
+            ) : (
+              categories.map((cat: any) => (
+                <FadeInItem key={cat._id} className="group">
+                  <div className="relative h-full p-1 rounded-[3rem] bg-gradient-to-b from-slate-200/50 to-transparent dark:from-white/10 dark:to-transparent hover:from-primary-1 transition-all duration-500">
+                    
+                    <div className="relative h-full p-8 md:p-10 rounded-[2.8rem] bg-white dark:bg-[#0B0F1A] border border-transparent transition-all duration-500 overflow-hidden flex flex-col shadow-sm group-hover:shadow-2xl group-hover:shadow-primary-1/10 group-hover:-translate-y-2">
+                      
+                      {/* Background Decor (Glow on hover) */}
+                      <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary-1/5 rounded-full blur-[60px] group-hover:bg-primary-1/10 transition-colors" />
+
+                      {/* Category Icon & Stats */}
+                      <div className="flex justify-between items-start mb-10">
+                        <div className="w-16 h-16 rounded-2xl bg-slate-50 dark:bg-white/5 text-primary-1 flex items-center justify-center shadow-inner group-hover:bg-primary-1 group-hover:text-white transition-all duration-500 transform group-hover:rotate-[10deg]">
+                          <LayoutGrid size={32} strokeWidth={2.5} />
                         </div>
-                      ))}
+                        <div className="text-right">
+                          <span className="block text-[20px] font-black text-slate-900 dark:text-white leading-none italic">0{subCategories.filter((sub: any) => sub.category_key === cat._id).length}</span>
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Modul</span>
+                        </div>
+                      </div>
+
+                      {/* Category Identity */}
+                      <div className="mb-8 flex-1">
+                        <h3 className="text-2xl md:text-3xl font-black mb-3 tracking-tight group-hover:text-primary-1 transition-colors uppercase italic dark:text-white">
+                          {cat.name}
+                        </h3>
+                        <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[200px]">
+                          Kuasai konsep dasar hingga tingkat mahir pada materi {cat.name.toLowerCase()}.
+                        </p>
+                      </div>
+
+                      {/* Sub-Category List (Preview) */}
+                      <div className="space-y-3 mb-10">
+                        {subCategories
+                          .filter((sub: any) => sub.category_key === cat._id)
+                          .slice(0, 3)
+                          .map((sub: any) => (
+                            <div key={sub._id} className="flex items-center justify-between group/item py-1">
+                              <div className="flex items-center gap-3">
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary-1/30 group-hover/item:bg-primary-1 transition-colors" />
+                                <span className="text-[13px] font-bold text-slate-600 dark:text-slate-400 group-hover/item:text-slate-900 dark:group-hover/item:text-white transition-colors">
+                                  {sub.name}
+                                </span>
+                              </div>
+                              <ArrowRight size={14} className="text-slate-300 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                            </div>
+                          ))}
+                      </div>
+
+                      {/* Action Button */}
+                      <button className="w-full py-4 rounded-2xl bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-[11px] font-black uppercase tracking-[0.2em] border border-slate-100 dark:border-white/5 transition-all hover:bg-primary-1 hover:text-white hover:border-transparent active:scale-95">
+                        Mulai Belajar
+                      </button>
+
+                    </div>
                   </div>
-                </div>
-              </FadeInItem>
+                </FadeInItem>
+              )
             ))}
           </div>
         </FadeInContainer>
