@@ -12,6 +12,7 @@ import api from "@/lib/axios";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import Link from "next/link";
 import { useToast } from "@/context/ToastContext";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const [categories, setCategories] = useState([]);
@@ -20,7 +21,7 @@ export default function LandingPage() {
 
 
   const { showToast } = useToast();
-
+  const router = useRouter();
   const [statsData, setStatsData] = useState({
     totalQuestions: 0,
     totalUsers: 0
@@ -28,30 +29,42 @@ export default function LandingPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true); // Pastikan loading dimulai
       try {
-        const [catRes, subRes, statsRes] = await Promise.all([
+        const [catRes, subRes, statsRes] = await Promise.allSettled([
           api.get('/categories'),
           api.get('/sub-categories'),
           api.get('/status/home')
         ]);
-        setCategories(catRes.data.data || catRes.data);
-        setSubCategories(subRes.data.data || subRes.data);
 
-        if (statsRes.data.success) {
+        // Handle Categories
+        if (catRes.status === 'fulfilled') {
+          setCategories(catRes.value.data.data || catRes.value.data || []);
+        }
+
+        // Handle Sub-Categories
+        if (subRes.status === 'fulfilled') {
+          setSubCategories(subRes.value.data.data || subRes.value.data || []);
+        }
+
+        // Handle Stats
+        if (statsRes.status === 'fulfilled' && statsRes.value.data.success) {
           setStatsData({
-            totalQuestions: statsRes.data.data.totalQuestions,
-            totalUsers: statsRes.data.data.totalUsers
+            totalQuestions: statsRes.value.data.data.totalQuestions || 0,
+            totalUsers: statsRes.value.data.data.totalUsers || 0
           });
         }
 
       } catch (err) {
-        console.error("Gagal memuat data:", err);
+        console.error("Gagal memuat data utama:", err);
+        showToast("error", "Beberapa data gagal dimuat, silakan refresh.");
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
   }, []);
+
 
   const formatNumber = (num: number) => {
     return num >= 1000 ? (num / 1000).toFixed(1) + 'k+' : num;
@@ -217,7 +230,8 @@ const stats = [
                       </div>
 
                       {/* Action Button */}
-                      <button className="w-full py-4 rounded-2xl bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-[11px] font-black uppercase tracking-[0.2em] border border-slate-100 dark:border-white/5 transition-all hover:bg-primary-1 hover:text-white hover:border-transparent active:scale-95">
+                      <button onClick={() => router.push(`/sub-category/${cat._id}`)}
+                        className="w-full py-4 rounded-2xl bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white text-[11px] font-black uppercase tracking-[0.2em] border border-slate-100 dark:border-white/5 transition-all hover:bg-primary-1 hover:text-white hover:border-transparent active:scale-95">
                         Mulai Belajar
                       </button>
 
@@ -235,8 +249,8 @@ const stats = [
         <FadeInContainer className="max-w-7xl mx-auto">
           <FadeInItem className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
             <div className="max-w-xl">
-              <h2 className="text-3xl md:text-4xl font-black mb-4">Daftar Materi Latihan</h2>
-              <p className="text-zinc-500 dark:text-zinc-400">Pilih sub-materi spesifik untuk mulai mengerjakan bank soal hari ini.</p>
+              <h2 className="text-3xl md:text-4xl font-black mb-4">Daftar Module Materi</h2>
+              <p className="text-zinc-500 dark:text-zinc-400">Pilih module spesifik untuk mulai mengerjakan bank soal hari ini.</p>
                           
               {/* <button onClick={testToast} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group">
                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

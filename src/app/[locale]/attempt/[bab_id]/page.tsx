@@ -18,9 +18,10 @@ import {
   Bookmark,
   ArrowRight,
   BookOpen,
-  LayoutGrid
+  LayoutGrid,
+  Construction
 } from 'lucide-react';
-import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { useToast } from '@/context/ToastContext';
 import { getErrorMessage } from '@/lib/utils';
@@ -109,6 +110,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
           setActiveAttemptData({ isOpen: true, babId: errorData.activeBabId });
           return;
         }
+        setQuestions([])
         showToast("error", getErrorMessage(err) as any);
       } finally {
         setIsLoading(false);
@@ -327,6 +329,8 @@ const [isGridOpen, setIsGridOpen] = useState(false);
     </>
   );
 
+
+
   return (
     <div className="min-h-screen bg-bg2 dark:bg-dark-bg1 flex flex-col font-sans transition-colors duration-300">
       
@@ -347,6 +351,65 @@ const [isGridOpen, setIsGridOpen] = useState(false);
         description="Jawaban Anda akan dikirim untuk penilaian. Pastikan tidak ada soal yang terlewat."
       />
 
+
+    {/* 1. STATE HANDLER (Letakkan di dalam render logic kamu) */}
+    {!isLoading && questions.length === 0 && (
+      <div className="min-h-[80vh] flex items-center justify-center px-6">
+        <ScaleIn className="max-w-lg w-full">
+          <div className="relative p-12 md:p-16 rounded-[3.5rem] bg-white dark:bg-[#0B0F1A] border border-slate-200/50 dark:border-white/5 text-center shadow-2xl shadow-slate-200/20 dark:shadow-none overflow-hidden">
+            
+            {/* Background Aura */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 blur-[80px] rounded-full -z-10" />
+
+            {/* Animated Icon Container */}
+            <div className="relative mx-auto w-24 h-24 mb-10 flex items-center justify-center">
+              <div className="absolute inset-0 bg-amber-500/20 rounded-[2rem] rotate-12 animate-pulse" />
+              <div className="absolute inset-0 bg-amber-500/10 rounded-[2rem] -rotate-12" />
+              <div className="relative w-20 h-20 bg-white dark:bg-slate-900 rounded-2xl border border-amber-500/30 flex items-center justify-center text-amber-500 shadow-xl shadow-amber-500/10">
+                <Construction size={40} strokeWidth={1.5} className="animate-bounce" />
+              </div>
+            </div>
+
+            {/* Content */}
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 italic uppercase tracking-tight">
+              Oops! <span className="text-amber-500 text-2xl block mt-1">Soal Belum Tersedia</span>
+            </h2>
+            
+            <p className="text-slate-500 dark:text-slate-400 font-medium mb-10 text-sm leading-relaxed">
+              Sepertinya bank soal untuk materi ini sedang dalam tahap penyusunan oleh tim kurikulum kami. 
+              <span className="block mt-2 opacity-60">Mohon kembali beberapa saat lagi ya!</span>
+            </p>
+
+            {/* Action Buttons */}
+            <div className="space-y-4">
+              <button 
+                onClick={() => window.location.reload()}
+                className="w-full py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02] active:scale-95 transition-all"
+              >
+                Coba Segarkan Halaman
+              </button>
+              
+              <button 
+                onClick={() => router.back()} // Sesuaikan route kamu
+                className="w-full py-4 bg-slate-50 dark:bg-white/5 text-slate-400 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] border border-slate-100 dark:border-white/5 hover:text-primary-1 transition-all"
+              >
+                Kembali
+              </button>
+            </div>
+
+            {/* Footer Meta */}
+            <div className="mt-12 pt-8 border-t border-slate-100 dark:border-white/5 flex items-center justify-center gap-4 opacity-40">
+              <div className="flex -space-x-2">
+                <div className="w-6 h-6 rounded-full bg-slate-200 border-2 border-white dark:border-slate-900" />
+                <div className="w-6 h-6 rounded-full bg-slate-300 border-2 border-white dark:border-slate-900" />
+              </div>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-slate-500">Mari Belajar Curators</span>
+            </div>
+
+          </div>
+        </ScaleIn>
+      </div>
+    )}
 
     {currentQuestion && (
       <div className="min-h-screen bg-[#FDFDFD] dark:bg-[#080B14] transition-colors duration-500">

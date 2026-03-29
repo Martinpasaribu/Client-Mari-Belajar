@@ -100,7 +100,7 @@ export default function SubCategoryPage() {
               <div 
                 onClick={() => router.push(`/bab/${sub._id}`)}
                 className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6 overflow-hidden rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-white/5 bg-white dark:bg-dark-bg2 p-5 md:p-6 shadow-sm hover:-translate-y-1 hover:border-primary-1/30 hover:shadow-2xl hover:shadow-primary-1/5 cursor-pointer
-                transition-all duration-300 ease-out hover:bg-white/10 
+                transition-all duration-300 ease-out  
                 active:scale-95 active:translate-y-0.5 active:shadow-inner
                 "
               >
