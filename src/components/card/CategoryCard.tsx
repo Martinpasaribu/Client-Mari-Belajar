@@ -51,33 +51,33 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
           </p>
         </div>
 
-{/* Footer Section: Action Button */}
-<footer className="
-  mt-auto flex items-center justify-between overflow-hidden rounded-2xl border border-slate-100 bg-white/50 p-1 backdrop-blur-sm 
-  
-  /* TRANSISI & HOVER */
-  transition-all duration-300 ease-out 
-  hover:border-white/20 hover:bg-white/10 hover:-translate-y-1 hover:shadow-md
-  
-  /* EFEK MELAMBUNG SAAT DITEKAN (ACTIVE) */
-  active:scale-95 active:translate-y-0.5 active:shadow-inner
-  
-  cursor-pointer group-hover:border-dark-primary1
-">
-  <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-primary-1 transition-colors duration-500 group-hover:text-white">
-    Lihat Materi
-  </span>
-  
-  <div className="
-    flex h-11 w-11 items-center justify-center rounded-xl bg-primary-1 text-white shadow-md 
-    transition-all duration-300 
-    group-hover:bg-slate-900 group-hover:shadow-lg
-    /* Efek tambahan pada icon saat ditekan */
-    active:scale-90
-  ">
-    <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
-  </div>
-</footer>
+        {/* Footer Section: Action Button */}
+        <footer className="
+          mt-auto flex items-center justify-between overflow-hidden rounded-2xl border border-slate-100 bg-white/50 dark:bg-gray-200 dark:text-primary-1 p-1 backdrop-blur-sm 
+          
+          /* TRANSISI & HOVER */
+          transition-all duration-300 ease-out 
+          hover:border-white/20 hover:bg-white/10 hover:-translate-y-1 hover:shadow-md
+          
+          /* EFEK MELAMBUNG SAAT DITEKAN (ACTIVE) */
+          active:scale-95 active:translate-y-0.5 active:shadow-inner
+          
+          cursor-pointer group-hover:border-dark-primary1
+        ">
+          <span className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-primary-1 transition-colors duration-500 group-hover:text-white">
+            Lihat Materi
+          </span>
+          
+          <div className="
+            flex h-11 w-11 items-center justify-center rounded-xl bg-primary-1 text-white shadow-md 
+            transition-all duration-300 
+            group-hover:bg-slate-900 group-hover:shadow-lg
+            /* Efek tambahan pada icon saat ditekan */
+            active:scale-90
+          ">
+            <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </div>
+        </footer>
 
       </div>
 

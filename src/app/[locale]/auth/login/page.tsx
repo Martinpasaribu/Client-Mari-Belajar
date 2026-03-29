@@ -112,7 +112,7 @@ export default function LoginPage() {
             <Link href="/"
             >
               <p 
-                className="w-full rounded-xl bg-gray-200 dark:bg-dark-primary1 text-center py-3 font-bold text-gray-400 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
+                className="w-full rounded-xl bg-gray-200  dark:text-white dark:bg-gray-800 text-center py-3 font-bold text-gray-400 hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50"
               >
               Tamu
             </p>

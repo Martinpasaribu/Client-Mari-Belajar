@@ -213,7 +213,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
   const renderMediaContent = (q: any) => {
     return (
       <div className="space-y-6 mb-8">
-        <h2 className="text-xl md:text-2xl text-slate-800 dark:text-slate-100 leading-relaxed font-bold">
+        <h2 className="text-sm md:text-xl md:text-2xl text-slate-800 dark:text-slate-100 leading-relaxed font-bold">
           {q?.question_text}
         </h2>
 
@@ -302,18 +302,18 @@ const [isGridOpen, setIsGridOpen] = useState(false);
           <button
             key={opt.label}
             onClick={() => handleSelectOption(opt.label)}
-            className={`group flex items-center gap-5 p-4 rounded-[2.5rem] border-2 transition-all text-left ${
+            className={`group flex items-center gap-5 p-2 md:p-4 rounded-[2.5rem] border-2 transition-all text-left ${
               isSelected(opt.label) 
                 ? 'border-primary-1 bg-primary-1/5 shadow-inner' 
                 : 'border-slate-50 dark:border-white/5 bg-slate-50 dark:bg-white/5 hover:border-slate-200'
             }`}
           >
-            <div className={`w-12 h-12 shrink-0 flex items-center justify-center rounded-2xl font-black text-lg transition-all ${
+            <div className={`w-9 h-9 md:w-12 md:h-12 shrink-0 flex items-center justify-center rounded-2xl font-black text-sm md:text-lg transition-all ${
               isSelected(opt.label) ? 'bg-primary-1 text-white rotate-6' : 'bg-white dark:bg-slate-800 text-slate-400'
             }`}>
               {opt.label}
             </div>
-            <span className={`font-bold text-lg ${isSelected(opt.label) ? 'text-primary-1' : 'text-slate-600 dark:text-slate-400'}`}>
+            <span className={`font-bold text-sm md:text-lg ${isSelected(opt.label) ? 'text-primary-1' : 'text-slate-600 dark:text-slate-400'}`}>
               {opt.text}
             </span>
           </button>

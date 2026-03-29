@@ -3,12 +3,15 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Sun, Moon, LogOut, ChevronDown, LayoutDashboard, User, Menu, Settings, ShieldCheck, Monitor } from "lucide-react";
+import { 
+  Sun, Moon, LogOut, ChevronDown, 
+  LayoutDashboard, User, Menu, Settings, 
+  ShieldCheck, Monitor 
+} from "lucide-react";
 import Link from 'next/link';
 import LanguageSwitcher from "../tools/LanguageSwitcher";
-import Cookies from 'js-cookie';
 import { useAuthStore } from "@/store/useAuthStore";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"; 
 import AppIcon from "../tools/AppIcon";
 import { FadeInDown } from "@/components/animations/MotionWrapper";
 import { useEffect, useRef, useState } from "react";
@@ -18,15 +21,17 @@ import { useLogout } from "@/hooks/useLogout";
 import { LogoutLoading } from "@/components/modals/LogoutLoading";
 
 export default function Navbar({ variant = "guest" }: { variant?: "guest" | "dashboard" }) {
-  const { user, logout } = useAuthStore();
-  const router = useRouter();
+  const { user } = useAuthStore();
+  const pathname = usePathname(); 
   const { handleLogout, isLoading } = useLogout();
   
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
+
+  // --- SEMUA HOOKS HARUS BERADA DI ATAS LOGIKA RETURN ---
 
   // Handle Scroll
   useEffect(() => {
@@ -46,24 +51,31 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
 
-
-
   const toggleTheme = () => {
     if (theme === "light") setTheme("dark");
     else if (theme === "dark") setTheme("system");
     else setTheme("light");
   };
 
-  // 2. Perbaiki logika ThemeIcon
   const ThemeIcon = () => {
     if (theme === "dark") return <Moon size={18} className="text-primary-1" />;
     if (theme === "light") return <Sun size={18} className="text-amber-500" />;
     return <Monitor size={18} className="text-slate-500" />;
   };
 
+  // --- LOGIKA PENYEMBUNYIAN (EARLY RETURN) ---
+  // Diletakkan setelah semua Hooks dipanggil untuk menghindari error "Rendered fewer hooks"
+  if (pathname?.includes("/attempt")) {
+    return null;
+  }
+
   return (
     <>
-      <nav className={`sticky top-0 z-50 transition-all duration-500 ${isScrolled ? "bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 py-0 shadow-lg shadow-slate-200/20" : "bg-transparent border-b border-transparent py-2"}`}>
+      <nav className={`sticky top-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? "bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 py-0 shadow-lg shadow-slate-200/20" 
+          : "bg-transparent border-b border-transparent py-2"
+      }`}>
        
        {isLoading && <LogoutLoading />}
 
@@ -75,15 +87,13 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
                 <Menu size={20} />
               </button>
 
-                  {!user ? (
-                      <Link href="/" className="flex transition-all hover:opacity-80 active:scale-95">
-                        <AppIcon variant="circle" width={isScrolled ? 80 : 70} height={70} className="transition-all duration-500"/>
-                      </Link>
-                  ):(
-                    <div> 
-                      
-                      </div>
-                  )}
+              {!user ? (
+                  <Link href="/" className="flex transition-all hover:opacity-80 active:scale-95">
+                    <AppIcon variant="circle" width={isScrolled ? 80 : 70} height={70} className="transition-all duration-500"/>
+                  </Link>
+              ) : (
+                <div /> 
+              )}
             </div>
 
             <div className="flex items-center gap-2 sm:gap-4">
@@ -121,7 +131,6 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
                         className="absolute right-0 mt-3 w-60 origin-top-right z-[60]"
                       >
                         <div className="bg-white dark:bg-dark-bg2 border border-slate-100 dark:border-white/5 rounded-[1.8rem] shadow-xl p-2">
-                          {/* User Info Section - Lebih Ramping */}
                           <div className="flex items-center gap-3 p-3 mb-1 bg-bg2 dark:bg-dark-bg1 rounded-[1.4rem]">
                             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary-1 to-primary-2 flex items-center justify-center text-white font-black text-xs shrink-0">
                               {user?.firstname?.substring(0, 2).toUpperCase()}
@@ -157,7 +166,6 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
                       </motion.div>
                     )}
                   </AnimatePresence>
-
                 </div>
               ) : (
                 <div className="hidden lg:flex items-center gap-6">
@@ -183,7 +191,6 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
   );
 }
 
-// Helper Component untuk Menu Dropdown
 function DropdownItem({ icon, label, href }: { icon: any, label: string, href: string }) {
   return (
     <Link href={href} className="flex items-center gap-3 p-2.5 px-3 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-bg2 dark:hover:bg-dark-bg1 hover:text-primary-1 transition-all group">
