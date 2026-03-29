@@ -18,12 +18,14 @@ import {
   Volume2
 } from 'lucide-react';
 import api from '@/lib/axios';
+import { useAuthStore } from '@/store/useAuthStore';
 import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
 
 export default function GuestQuizResultPage() {
   const params = useParams();
   const router = useRouter();
   const attemptId = params.attempt_id;
+  const { user } = useAuthStore(); // Cek status login
 
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,19 +33,30 @@ export default function GuestQuizResultPage() {
 
   useEffect(() => {
     if (!attemptId) return;
-    const fetchGuestResult = async () => {
+
+    const fetchResult = async () => {
       try {
         setIsLoading(true);
-        const response = await api.get(`/attempts/${attemptId}/result`);
-        if (response.data.success) setData(response.data.data);
+        
+        // DINAMIS: Gunakan endpoint guest jika tidak ada user login
+        const endpoint = user 
+          ? `/attempts/${attemptId}/result` 
+          : `/guest/attempts/${attemptId}/result`;
+
+        const response = await api.get(endpoint);
+        
+        if (response.data.success) {
+          setData(response.data.data);
+        }
       } catch (err: any) {
         setError(err.response?.data?.message || "Gagal memuat hasil kuis.");
       } finally {
         setIsLoading(false);
       }
     };
-    fetchGuestResult();
-  }, [attemptId]);
+    
+    fetchResult();
+  }, [attemptId, user]);
 
   // --- HELPER RENDER MEDIA ---
   const renderQuestionMedia = (q: any) => {

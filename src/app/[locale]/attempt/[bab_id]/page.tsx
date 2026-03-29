@@ -53,41 +53,43 @@ export default function QuizAttemptPage() {
     answersRef.current = userAnswers;
   }, [userAnswers]);
 
-  // --- INITIALIZE QUIZ ---
+// --- INITIALIZE QUIZ ---
   useEffect(() => {
-
     if (!babId || hasInitialized.current) return;
 
     const initializeQuiz = async () => {
       try {
-        const startRes = await api.post(`/attempts/start/${babId}`, { bab_key: babId });
+        // DINAMIS: Tentukan endpoint start berdasarkan status login
+        const startEndpoint = user 
+          ? `/attempts/start/${babId}` 
+          : `/guest/attempts/start/${babId}`;
+
+        const startRes = await api.post(startEndpoint, { bab_key: babId });
+        
+        // Data pertanyaan tetap menggunakan guest endpoint jika memang didesain publik
         const qRes = await api.get(`/bab/questions/guest/${babId}`);
         
         if (startRes.data.success) {
           const attempt = startRes.data.data;
           const remaining = attempt.remainingTime || 0;
 
-          // 1. Sinkronisasi jawaban dari Database ke State & Ref
-          // Ini penting agar saat auto-submit, jawaban yang sudah tersimpan tidak hilang
+          // Sinkronisasi jawaban lama jika ada
           if (attempt.answers?.length > 0) {
             const recovered: Record<string, string> = {};
             attempt.answers.forEach((ans: any) => {
               recovered[ans.question_key] = ans.answer_given;
             });
             setUserAnswers(recovered);
-            answersRef.current = recovered; // Update ref secara instan
+            answersRef.current = recovered;
           }
 
           setAttemptId(attempt._id);
           setQuestions(qRes.data.data.questions || qRes.data.data);
           setTimeLeft(remaining); 
 
-          // 2. Proteksi & Auto-Submit jika kuis sudah selesai/habis waktunya
-          // Kita satukan logika 'finished' dan 'remaining <= 0' agar satu pintu lewat executeSubmit
+          // Auto-submit jika status sudah selesai atau waktu habis
           if (attempt.status === 'finished' || attempt.status === 'submitted' || remaining <= 0) {
             showToast("info", "Sesi kuis telah berakhir. Mengalihkan...");
-            
-            // Panggil fungsi submit secara paksa dengan ID dari response
             await executeSubmit(attempt._id);
             return;
           }
@@ -96,21 +98,11 @@ export default function QuizAttemptPage() {
         }
       } catch (err: any) {
         const errorData = err.response?.data;
-        
-        // LOGIKA MODAL WARNING: Jika ada bab lain yang aktif
         if (errorData?.activeBabId && errorData.activeBabId !== babId) {
-          setActiveAttemptData({
-            isOpen: true,
-            babId: errorData.activeBabId
-          });
+          setActiveAttemptData({ isOpen: true, babId: errorData.activeBabId });
           return;
         }
-
-        const msg = getErrorMessage(err);
-        showToast("error", msg as any);
-        
-        // Opsional: Jika error parah, balikkan ke katalog agar tidak stuck
-        // router.push('/dashboard/catalogs');
+        showToast("error", getErrorMessage(err) as any);
       } finally {
         setIsLoading(false);
       }
@@ -118,7 +110,8 @@ export default function QuizAttemptPage() {
 
     initializeQuiz();
     hasInitialized.current = true;
-  }, [babId]);
+  }, [babId, user]); // Tambahkan user ke dependency
+  
     
   // --- TIMER LOGIC & AUTO SUBMIT ---
   useEffect(() => {
@@ -154,6 +147,7 @@ export default function QuizAttemptPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [timeLeft]);
 
+// --- EXECUTE SUBMIT ---
   const executeSubmit = async (forcedId?: string) => {
     const targetId = forcedId || attemptId;
     if (submittingRef.current || !targetId) return;
@@ -168,7 +162,12 @@ export default function QuizAttemptPage() {
         answer_given: answersRef.current[q._id] || "" 
       }));
 
-      const res = await api.post(`/attempts/${targetId}/submit`, { 
+      // DINAMIS: Tentukan endpoint submit berdasarkan status login
+      const submitEndpoint = user 
+        ? `/attempts/${targetId}/submit` 
+        : `/guest/attempts/${targetId}/submit`;
+
+      const res = await api.post(submitEndpoint, { 
         answers: formattedAnswers 
       });
 
@@ -178,7 +177,6 @@ export default function QuizAttemptPage() {
       }
     } catch (err: any) {
       console.error("Submit error:", err);
-      // Tangani status 400 (Waktu Habis) agar tidak stuck
       if (err.response?.status === 400 || err.response?.data?.message?.includes('expired')) {
             const targetPath = user ? 'dashboard/history' : 'attempt';
             router.replace(`/${targetPath}/result/${targetId}`);
@@ -222,13 +220,15 @@ export default function QuizAttemptPage() {
         )}
 
         {/* Multimedia: Audio (Tipe 5) */}
-        {q?.question_audio && (
+        {q?.question_audio?.url && ( // Tambahkan .url di pengecekan
           <div className="flex items-center gap-4 p-6 bg-primary-1/5 rounded-[2rem] border border-primary-1/20 w-full max-w-md">
             <div className="w-12 h-12 bg-primary-1 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary-1/30">
               <Volume2 size={24} />
             </div>
             <audio controls className="h-10 w-full">
-              <source src={q.question_audio} type="audio/mpeg" />
+              {/* Panggil q.question_audio.url di sini */}
+              <source src={q.question_audio.url} type="audio/mpeg" />
+              Browser Anda tidak mendukung elemen audio.
             </audio>
           </div>
         )}

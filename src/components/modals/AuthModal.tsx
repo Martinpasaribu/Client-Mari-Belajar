@@ -55,7 +55,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <div className="space-y-3">
                 <button 
                   onClick={() => router.push('/auth/login')}
-                  className="group flex w-full items-center justify-between rounded-2xl border-2 border-bg2 dark:border-white/5 bg-white dark:bg-dark-bg1 p-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 transition-all hover:border-primary-1/30 dark:hover:border-dark-primary1/30 active:scale-[0.98]"
+                  className="group flex w-full items-center justify-center rounded-2xl border-2 border-bg2 dark:border-white/5 bg-white dark:bg-dark-bg1 p-4 text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-200 transition-all hover:border-primary-1/30 dark:hover:border-dark-primary1/30 active:scale-[0.98]"
                 >
                   <div className="flex items-center gap-3">
                     <img src="/assets/icon/google.png" className="h-5 w-5" alt="G" />

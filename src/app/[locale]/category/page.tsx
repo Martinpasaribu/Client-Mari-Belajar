@@ -80,7 +80,7 @@ export default function CategoryPage() {
         </header>
 
         {/* Grid Categories */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((cat) => (
             <FadeInItem key={cat._id}>
               <CategoryCard 

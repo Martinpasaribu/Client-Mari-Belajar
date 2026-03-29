@@ -11,7 +11,9 @@ import {
   Lock, 
   Trophy, 
   BookOpen, 
-  Unlock 
+  Unlock, 
+  Crown,
+  BadgeCheck
 } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import api from '@/lib/axios';
@@ -92,11 +94,27 @@ export default function BabPage() {
       <FadeInContainer className="mx-auto max-w-4xl px-6 py-12">
         {/* Header Section */}
         <FadeInItem className="mb-16">
+
+        <div className='flex justify-between items-center'>
           <div className="mb-6 inline-flex items-center gap-2 rounded-xl bg-primary-1/10 dark:bg-dark-primary1/10 px-4 py-2 text-primary-1 dark:text-dark-primary1 font-bold">
             <BookOpen size={16} />
             <span className="text-[10px] font-black uppercase tracking-[0.2em]">Bab Pembelajaran</span>
           </div>
-          
+        
+          {data?.sub_category?.isFree ? (
+            <div className="mb-4 flex items-center gap-2 bg-green-100 w-fit p-2">
+                <BadgeCheck size={14} className="text-primary-1" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Freemium Package</span>
+              </div>
+              ) : (
+                <div className="mb-4 flex items-center gap-2 bg-blue-100 w-fit p-2">
+                <Crown size={14} className="text-primary-2" />
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-2">Premium Package</span>
+              </div>
+              )
+            }
+        </div>
+
           <h1 className="text-4xl font-black tracking-tighter text-foreground dark:text-white md:text-6xl mb-6 uppercase italic leading-none">
              {data.sub_category?.name || "Materi Belajar"}
           </h1>

@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Layers, GraduationCap, ChevronRight, LayoutGrid, Info } from 'lucide-react';
+import { ArrowLeft, Layers, GraduationCap, ChevronRight, LayoutGrid, Info, Crown } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import api from '@/lib/axios';
 
@@ -70,6 +70,7 @@ export default function SubCategoryPage() {
                 <LayoutGrid size={14} className="text-primary-1" />
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Modul Materi</span>
               </div>
+
               <h1 className="mb-6 text-5xl font-black tracking-tighter text-white md:text-6xl italic uppercase">
                 {data.name}
               </h1>
