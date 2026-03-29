@@ -116,7 +116,7 @@ export default function BabPage() {
               <FadeInItem key={bab._id}>
                 <div 
                   onClick={() => handleBabClick(bab)}
-                  className="group relative flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-8 rounded-[2rem] md:rounded-[2.5rem] border border-white dark:border-white/5 bg-white dark:bg-dark-bg2 p-4 md:p-5 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary-1/5
+                  className="group relative flex select-none flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-8 rounded-[2rem] md:rounded-[2.5rem] border border-white dark:border-white/5 bg-white dark:bg-dark-bg2 p-4 md:p-5 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary-1/5
                   ease-out hover:border-primary-1 active:scale-95 active:translate-y-0.5 active:shadow-inner
                   "
                 >

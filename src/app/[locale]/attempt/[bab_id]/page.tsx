@@ -219,11 +219,11 @@ const [isGridOpen, setIsGridOpen] = useState(false);
 
         {/* Multimedia: Image (Tipe 4) */}
         {q?.question_images && q.question_images.length > 0 && (
-          <div className="rounded-[2.5rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl bg-slate-50 inline-block p-2">
+          <div className="rounded-[.5rem] overflow-hidden border-4 border-white dark:border-slate-800 shadow-2xl bg-slate-50 inline-block p-2">
             <img 
               src={q.question_images[0].url} 
               alt="Context" 
-              className="max-h-[350px] w-auto object-contain rounded-[2rem]"
+              className="max-h-[350px] w-auto object-contain "
             />
           </div>
         )}
@@ -271,17 +271,17 @@ const [isGridOpen, setIsGridOpen] = useState(false);
             <button
               key={opt.label}
               onClick={() => handleSelectOption(opt.label)}
-              className={`group flex flex-col p-3 rounded-[2.5rem] border-2 transition-all ${
+              className={`group flex flex-col p-3 rounded-[.5rem] border-2 transition-all ${
                 isSelected(opt.label)
                   ? 'border-primary-1 bg-primary-1/5 shadow-xl scale-105' 
                   : 'border-slate-100 dark:border-white/5 bg-white dark:bg-white/5 hover:border-slate-300'
               }`}
             >
-              <div className="aspect-square w-full overflow-hidden rounded-[2rem] bg-slate-100 mb-4 border border-slate-50 dark:border-white/5">
+              <div className="aspect-square w-full overflow-hidden rounded-[.5rem] bg-slate-100 mb-4 border border-slate-50 dark:border-white/5">
                 <img 
                   src={opt.image?.url} 
                   alt={opt.label} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                  className="w-full h-full object-background group-hover:scale-110 transition-transform duration-700" 
                 />
               </div>
               <div className={`w-10 h-10 mx-auto flex items-center justify-center rounded-2xl font-black text-sm transition-all ${

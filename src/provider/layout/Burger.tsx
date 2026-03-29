@@ -99,10 +99,10 @@ export default function MobileMenu({
             </p>
 
   
-            <MobileNavLink href="/catalogs" label="Dashboard" onClick={onClose} />
+            <MobileNavLink href="/" label="Dashboard" onClick={onClose} />
             <MobileNavLink href="/about" label="Tentang Kami" onClick={onClose} />
             <MobileNavLink href="/privacy-policy" label="Privacy & Policy" onClick={onClose} />
-            <MobileNavLink href="/terms-condition" label="Terms Condition" onClick={onClose} />
+            <MobileNavLink href="/terms-conditions" label="Terms Condition" onClick={onClose} />
 
 
           </div>
