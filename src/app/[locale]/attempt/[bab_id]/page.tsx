@@ -213,7 +213,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
   const renderMediaContent = (q: any) => {
     return (
       <div className="space-y-6 mb-8">
-        <h2 className="text-sm md:text-xl md:text-2xl text-slate-800 dark:text-slate-100 leading-relaxed font-bold">
+        <h2 className="select-none text-sm md:text-xl md:text-2xl text-slate-800 dark:text-slate-100 leading-relaxed font-bold">
           {q?.question_text}
         </h2>
 
@@ -302,7 +302,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
           <button
             key={opt.label}
             onClick={() => handleSelectOption(opt.label)}
-            className={`group flex items-center gap-5 p-2 md:p-4 rounded-[2.5rem] border-2 transition-all text-left ${
+            className={`group flex select-none items-center gap-5 p-2 md:p-4 rounded-[2.5rem] border-2 transition-all text-left ${
               isSelected(opt.label) 
                 ? 'border-primary-1 bg-primary-1/5 shadow-inner' 
                 : 'border-slate-50 dark:border-white/5 bg-slate-50 dark:bg-white/5 hover:border-slate-200'
@@ -465,7 +465,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
               <div className="bg-white dark:bg-slate-900/40 md:rounded-[2.5rem] min-h-[calc(100vh-120px)] md:min-h-[600px] flex flex-col border-x md:border border-slate-200/50 dark:border-white/5 shadow-sm overflow-hidden relative">
                 
                 {/* Mobile Header Info */}
-                <div className="md:hidden px-6 py-4 flex items-center justify-between bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                <div className="md:hidden select-none px-6 py-4 flex items-center justify-between bg-slate-50/50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Question {currentIdx + 1} of {questions.length}</span>
                   {userAnswers[currentQuestion?._id] && (
                     <div className="flex items-center gap-1.5 text-[9px] font-black text-emerald-500 uppercase">
@@ -475,7 +475,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                 </div>
 
                 {/* Question Body */}
-                <div className="py-6 px-3 md:p-16 flex-1 overflow-y-auto scrollbar-hide">
+                <div className="py-6 select-none px-3 md:p-16 flex-1 overflow-y-auto scrollbar-hide">
                   <div className="max-w-3xl mx-auto">
                     <div className="flex items-center gap-2 mb-8">
                         <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase tracking-widest border border-slate-200/50 dark:border-white/5">
