@@ -6,6 +6,7 @@ interface AuthState {
   user: any | null;
   token: string | null;
   setAuth: (user: any, token: string) => void;
+  setUser: (user: any) => void; // Tambahkan ini
   logout: () => void;
 }
 
@@ -14,13 +15,19 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: null,
+      
       setAuth: (user, token) => {
-        // Simpan token di localStorage sebagai backup (opsional karena persist sudah menyimpannya)
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', token);
         }
         set({ user, token });
       },
+
+      // Tambahkan fungsi ini untuk update data user saja
+      setUser: (user) => {
+        set({ user });
+      },
+
       logout: () => {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');
@@ -30,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     { 
       name: 'auth-storage',
-      // Opsional: Hanya simpan field tertentu jika perlu
     }
   )
 );

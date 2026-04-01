@@ -21,30 +21,38 @@ export default function LoginPage() {
   const { showToast, updateToast } = useToast();
   const router = useRouter();
 
+  // Di dalam LoginPage() ...
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // 1. Jalankan toast loading dan simpan ID-nya
     const toastId = showToast("Sedang memverifikasi akun...", "loading");
     setLoading(true);
 
     try {
       const { data } = await api.post('/auth/login', { email, password });
       
-      // Simpan data autentikasi
       setAuth(data.user, data.access_token);
       Cookies.set('token', data.access_token, { expires: 1, path: '/' }); 
+      updateToast(toastId, "Login berhasil!", "success");
       
-      // 2. Update toast menjadi sukses
-      updateToast(toastId, "Login berhasil! Selamat datang kembali.", "success");
-      
-      // Beri sedikit delay agar user bisa melihat animasi LoginLoading sebelum pindah
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
       router.push('/dashboard/main');
     } catch (error: any) {
-      // 3. Update toast jika gagal
-      const errorMessage = error.response?.data?.message || 'Login gagal, periksa email atau password';
+      const message = error.response?.data?.message;
+
+      // LOGIKA KHUSUS UNTUK USER GOOGLE
+      if (message === 'LOGIN_WITH_GOOGLE_REQUIRED') {
+        updateToast(toastId, "Akun terhubung dengan Google. Mengarahkan...", "success");
+        
+        // Tunggu 1.5 detik agar user sempat baca toast, lalu redirect ke Google
+        setTimeout(() => {
+          loginGoogle();
+        }, 1500);
+        return; // Stop eksekusi agar loading tetap aktif sampai halaman pindah
+      }
+
+      // Error normal (Password salah/User tidak ada)
+      const errorMessage = message || 'Login gagal, periksa email atau password';
       updateToast(toastId, errorMessage, "error");
       setLoading(false);
     }
