@@ -82,9 +82,9 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pb-24 transition-colors duration-300">
       
       {/* MOBILE HEADER NAVIGATION */}
-      <div className="lg:hidden flex items-center justify-between p-6 bg-white dark:bg-slate-900 border-b dark:border-white/5 sticky top-0 z-30">
+      <div className="lg:hidden flex items-center justify-between p-3 md:p-6 bg-white dark:bg-slate-900 border-b dark:border-white/5 sticky top-0 z-30">
         <button onClick={() => router.back()} className="p-2 -ml-2 text-slate-500"><ChevronLeft /></button>
-        <h1 className="text-sm font-black uppercase tracking-widest text-slate-800 dark:text-white italic">My Profile</h1>
+        <h1 className="text-sm font-black uppercase tracking-widest text-slate-800 dark:text-white ">My Profile</h1>
         <div className="w-8" /> {/* Spacer */}
       </div>
 
@@ -93,10 +93,10 @@ export default function ProfilePage() {
         {/* DESKTOP TITLE (Hidden on Mobile) */}
         <FadeInItem className="hidden lg:block mb-12">
           <BlurIn>
-            <h1 className="text-5xl font-black text-slate-800 dark:text-white tracking-tighter uppercase italic">
+            <h1 className="text-5xl font-black text-slate-800 dark:text-white tracking-tighter uppercase ">
               User <span className="text-primary-1">Profile.</span>
             </h1>
-            <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium italic">
+            <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium ">
               Kelola informasi pribadi dan keamanan akun kamu.
             </p>
           </BlurIn>
@@ -159,7 +159,7 @@ export default function ProfilePage() {
                   <div className="p-3 bg-primary-1/10 text-primary-1 rounded-2xl hidden sm:block">
                     <User size={20} />
                   </div>
-                  <h3 className="text-lg lg:text-xl font-black text-slate-800 dark:text-white uppercase italic tracking-tight">Informasi Pribadi</h3>
+                  <h3 className="text-lg lg:text-xl font-black text-slate-800 dark:text-white uppercase  tracking-tight">Informasi Pribadi</h3>
                 </div>
                 
                 <button 
@@ -198,7 +198,7 @@ export default function ProfilePage() {
                 <div className="p-3 bg-primary-2/10 text-primary-2 rounded-2xl hidden sm:block">
                   <KeyRound size={20} />
                 </div>
-                <h3 className="text-lg lg:text-xl font-black text-slate-800 dark:text-white uppercase italic tracking-tight">Keamanan Akun</h3>
+                <h3 className="text-lg lg:text-xl font-black text-slate-800 dark:text-white uppercase  tracking-tight">Keamanan Akun</h3>
               </div>
               
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 lg:p-8 rounded-[2rem] bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-white/5">

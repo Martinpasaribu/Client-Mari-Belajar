@@ -130,8 +130,8 @@ const stats = [
             </p>
           </FadeInItem>
           <FadeInItem className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group
-                duration-300 ease-out hover:bg-white/10 
+            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 dark:bg-primary-2 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group
+                duration-300 ease-out hover:bg-primary-2 hover:dark:bg-primary-1
                 active:scale-95 active:translate-y-0.5 active:shadow-inner
             ">
               Mulai Latihan <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

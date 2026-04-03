@@ -169,7 +169,7 @@ export default function QuizResultPage() {
         </div>
       </nav>
 
-      <FadeInContainer className="max-w-4xl mx-auto py-6 px-3 md:px-6">
+      <FadeInContainer className="max-w-4xl mx-auto py-6 px-1 md:px-6">
 
 
         {/* SCORE HERO */}
@@ -267,10 +267,10 @@ export default function QuizResultPage() {
             const isImageOptions = q?.options?.some((opt: any) => opt.image?.url);
 
             return (
-              <FadeInItem key={idx} className="bg-white dark:bg-dark-bg2 rounded-[3rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none">
-                <div className="p-6 md:p-8 lg:p-12">
+              <FadeInItem key={idx} className="bg-white dark:bg-dark-bg2 rounded-[1rem] md:rounded-[3rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none">
+                <div className="p-3 lg:p-6 xl:p-8 2xl:p-12">
                   <div className="flex justify-between items-center mb-8">
-                    <span className="px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-2xl text-[10px] font-black text-slate-400 border border-slate-100 dark:border-white/10 uppercase tracking-widest">
+                    <span className="px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-lg md:rounded-2xl text-[10px] font-black text-slate-400 border border-slate-100 dark:border-white/10 uppercase tracking-widest">
                       Q {idx + 1}
                     </span>
                     <StatusBadge isSkipped={isSkipped} isCorrect={isCorrect} />
@@ -278,7 +278,7 @@ export default function QuizResultPage() {
 
                   {renderQuestionMedia(q)}
 
-                  <p className="text-xl text-slate-800 dark:text-slate-100 font-bold leading-tight mb-10">
+                  <p className="text-lg md:text-xl text-slate-800 dark:text-slate-100 font-bold leading-tight mb-10">
                     {q?.question_text}
                   </p>
 
@@ -334,11 +334,11 @@ function OptionReview({ opt, isImage, isUserChoice, isCorrectOpt }: any) {
 
   if (isImage) {
     return (
-      <div className={`relative p-2 rounded-[2rem] border-2 transition-all ${style}`}>
+      <div className={`relative md:p-2 md:rounded-[2rem] border-2 transition-all ${style}`}>
         <div className="aspect-square rounded-[1.5rem] overflow-hidden mb-3 bg-white">
           <img src={opt.image?.url} alt={opt.label} className="w-full h-full object-contain" />
         </div>
-        <div className={`w-7 h-7 mx-auto flex items-center justify-center rounded-lg font-black text-[10px] ${labelStyle}`}>
+        <div className={`w-7 h-7 mx-auto flex items-center justify-center rounded-lg font-black text-[8px] md:text-[10px] ${labelStyle}`}>
           {opt.label}
         </div>
         {isCorrectOpt && <CheckCircle2 size={16} className="absolute top-2 right-2 text-emerald-500 bg-white rounded-full" />}
@@ -347,7 +347,7 @@ function OptionReview({ opt, isImage, isUserChoice, isCorrectOpt }: any) {
   }
 
   return (
-    <div className={`flex items-center gap-5 p-5 rounded-[2rem] border-2 transition-all ${style}`}>
+    <div className={`flex items-center gap-5 p-2 md:p-5 rounded-[1rem] md:rounded-[2rem] border-2 transition-all ${style}`}>
       <span className={`w-10 h-10 flex items-center justify-center rounded-xl font-black text-xs ${labelStyle}`}>
         {opt.label}
       </span>

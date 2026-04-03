@@ -88,32 +88,32 @@ export default function DashboardPage() {
       {/* GLOBAL LOADER */}
       <MainLoading isOpen={loading} title="Menyiapkan Workspace..." />
 
-      <FadeInContainer className="min-h-screen bg-bg1 dark:bg-dark-bg1 transition-colors duration-300 pb-20">
-        <div className="max-w-7xl mx-auto p-6 lg:p-12">
+      <FadeInContainer className="min-h-screen bg-bg1 dark:bg-transparent transition-colors duration-300 pb-20">
+        <div className="max-w-7xl mx-auto p-1 md:p-6 lg:p-12">
           
           {!loading && (
             <>
               {/* SECTION: WELCOME & STATS */}
               <FadeInItem className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-16">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-1/10 border border-primary-1/20 text-primary-1">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 mb-2 rounded-full bg-primary-1/10 border border-primary-1/20 text-primary-1">
                     <Zap size={12} fill="currentColor" />
                     <span className="text-[9px] font-black uppercase tracking-widest text-primary-1">Dashboard Active</span>
                   </div>
-                  <h1 className="text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-none uppercase">
-                    Siap Belajar <span className="text-primary-1 italic">Hari Ini?</span>
+                  <h1 className="text-xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-none uppercase">
+                    Siap Belajar <span className="text-primary-1 ">Hari Ini?</span>
                   </h1>
-                  <p className="text-slate-500 dark:text-slate-400 font-medium">Lanjutkan progress belajarmu atau jelajahi materi baru.</p>
+                  <p className="text-sm md:text-lg text-slate-500 dark:text-slate-400 font-medium">Lanjutkan progress belajarmu atau jelajahi materi baru.</p>
                 </div>
                 
                 <div className="flex gap-4">
-                  <div className="bg-bg2 dark:bg-dark-bg2 px-6 py-4 rounded-[2rem] border border-slate-200 dark:border-white/5 shadow-sm text-center min-w-[120px]">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Active</p>
-                      <p className="text-3xl font-black text-primary-1 leading-none">{activeModules.length}</p>
+                  <div className="bg-bg2 dark:bg-dark-bg2 px-3 py-2 md:px-6 md:py-4 min-w-[70px] md:min-w-[120px] rounded-[1rem] md:rounded-[2rem] border border-slate-200 dark:border-white/5 shadow-sm text-center ">
+                      <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Active</p>
+                      <p className="text:xl md:text-3xl font-black text-primary-1 leading-none">{activeModules.length}</p>
                   </div>
-                  <div className="bg-bg2 dark:bg-dark-bg2 px-6 py-4 rounded-[2rem] border border-slate-200 dark:border-white/5 shadow-sm text-center min-w-[120px]">
-                      <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Catalog</p>
-                      <p className="text-3xl font-black text-dark-primary-2 leading-none">{availableCatalogs.length}</p>
+                  <div className="bg-bg2 dark:bg-dark-bg2 px-3 py-2 md:px-6 md:py-4 min-w-[70px] md:min-w-[120px] rounded-[1rem] md:rounded-[2rem] border border-slate-200 dark:border-white/5 shadow-sm text-center">
+                      <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Module</p>
+                      <p className="text:xl md:text-3xl  font-black text-dark-primary-2 leading-none">{availableCatalogs.length}</p>
                   </div>
                 </div>
               </FadeInItem>
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                     <div className="w-8 h-8 rounded-lg bg-primary-1 text-white flex items-center justify-center shadow-lg shadow-primary-1/30">
                       <Sparkles size={18} fill="currentColor" />
                     </div>
-                    <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Materi Aktif</h2>
+                    <h2 className="text-sm md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Materi Aktif</h2>
                   </div>
                 </FadeInItem>
 
@@ -166,23 +166,23 @@ export default function DashboardPage() {
                     </div>
                   </FadeInItem>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 md:gap-8">
                     {activeModules.map((enroll: any) => (
                       <FadeInItem key={enroll._id}>
                         {enroll.sub_category_key && (
                           <Link href={`/dashboard/modules/${enroll.sub_category_key?._id}`} className="group block h-full">
-                            <div className="relative h-full bg-bg2 dark:bg-dark-bg2 border border-slate-200 dark:border-white/5 rounded-[2.5rem] p-8 shadow-sm transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-primary-1/10 overflow-hidden">
+                            <div className="relative h-full bg-bg2 dark:bg-dark-bg2 border border-slate-200 dark:border-white/5 rounded-[2.5rem] p-5 md:p-8 shadow-sm transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-2xl group-hover:shadow-primary-1/10 overflow-hidden">
                               <div className="flex flex-col h-full">
-                                <div className="flex justify-between items-start mb-8">
-                                  <div className="w-14 h-14 bg-bg1 dark:bg-dark-bg1 border border-slate-100 dark:border-white/10 rounded-2xl flex items-center justify-center text-primary-1 group-hover:bg-primary-1 group-hover:text-white transition-all duration-500">
+                                <div className="flex justify-between items-start mb-4 md:mb-8">
+                                  <div className="w-10 h-10 md:w-14 md:h-14 bg-bg1 dark:bg-dark-bg1 border border-slate-100 dark:border-white/10 rounded-2xl flex items-center justify-center text-primary-1 group-hover:bg-primary-1 group-hover:text-white transition-all duration-500">
                                     <BookOpen size={28} />
                                   </div>
                                   <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">Active</div>
                                 </div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4 leading-tight group-hover:text-primary-1 transition-colors">
+                                <h3 className="text-md md:text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight group-hover:text-primary-1 transition-colors">
                                   {enroll.sub_category_key?.name}
                                 </h3>
-                                <div className="mt-auto pt-6 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                                <div className="mt-auto pt-4 md:pt-6 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                                   <div className="flex items-center gap-2 text-slate-400 text-[11px] font-bold uppercase tracking-tighter">
                                     <Clock size={14} className="text-dark-primary-2" />
                                     <span>Exp: {new Date(enroll.expiredAt).toLocaleDateString('id-ID')}</span>
@@ -203,21 +203,21 @@ export default function DashboardPage() {
 
               {/* SECTION: KATALOG TERBARU */}
               <section>
-                <FadeInItem className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 px-2">
+                <FadeInItem className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-10 gap-3 md:gap-6 md:px-2">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <h2 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter flex items-center gap-2">
+                      <h2 className="text-sm md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter flex items-center gap-2">
                         <Lock size={18} className="text-slate-400" /> Katalog Terbaru
                       </h2>
-                      <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Upgrade skill kamu sekarang</p>
+                      <p className="text-[9px] md:text-[11px] font-bold text-slate-400 uppercase tracking-widest">Upgrade skill kamu sekarang</p>
                     </div>
-                    <Link href="/dashboard/catalogs" className="inline-block px-5 py-2 rounded-full border border-slate-200 dark:border-white/10 text-[10px] font-black uppercase tracking-widest hover:bg-white dark:hover:bg-white/5 transition-all">
+                    <Link href="/dashboard/catalogs" className="inline-block px-5 py-2 rounded-full border border-slate-200 dark:border-white/40 text-[10px] font-black uppercase tracking-widest hover:bg-white dark:hover:bg-white/5 transition-all">
                       Semua Katalog
                     </Link>
                   </div>
 
                   {/* SEARCH BAR */}
-                  <div className="relative w-full lg:max-w-md group">
+                  <div className="relative w-full lg:max-w-md group mt-2">
                     <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
                       <Search size={18} className="text-slate-400 group-focus-within:text-primary-1 transition-colors" />
                     </div>

@@ -86,12 +86,12 @@ export default function CatalogDetailPage() {
   if (!catalog) return <div className="p-20 text-center font-black uppercase tracking-widest">Modul tidak ditemukan.</div>;
 
   return (
-    <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 transition-colors pb-20 overflow-x-hidden">
+    <div className="min-h-screen bg-bg1 dark:bg-transparent transition-colors pb-10 md:pb-20 overflow-x-hidden">
       {/* Background Ornaments */}
       <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-primary-1/5 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2" />
       <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-primary-2/5 blur-[120px] rounded-full -z-10 -translate-x-1/2 translate-y-1/2" />
 
-      <FadeInContainer className="max-w-7xl mx-auto px-6 pt-10">
+      <FadeInContainer className="max-w-7xl mx-auto px-2 md:px-6 pt-5 md:pt-10">
         <FadeInItem>
           <button 
             onClick={() => router.back()}
@@ -126,7 +126,7 @@ export default function CatalogDetailPage() {
           </FadeInItem>
             
             <FadeInItem>
-              <h1 className="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-tighter uppercase italic">
+              <h1 className="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-tighter uppercase ">
                 {catalog.name.split(' ').map((word: string, i: number) => (
                   <span key={i} className={i === 1 ? "text-primary-1" : ""}>{word} </span>
                 ))}
@@ -183,7 +183,7 @@ export default function CatalogDetailPage() {
         <div className="mt-32">
           <FadeInItem className="flex items-center gap-4 mb-12">
             <div className="h-px flex-1 bg-slate-100 dark:bg-white/5"></div>
-            <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-[0.3em] italic">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-[0.3em] ">
               Syllabus <span className="text-primary-1">Overview</span>
             </h2>
             <div className="h-px flex-1 bg-slate-100 dark:bg-white/5"></div>
