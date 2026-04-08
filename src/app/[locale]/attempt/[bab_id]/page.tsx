@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -158,11 +159,14 @@ const [isGridOpen, setIsGridOpen] = useState(false);
 
 // --- EXECUTE SUBMIT ---
   const executeSubmit = async (forcedId?: string) => {
+    
+    setIsSubmitting(true);
+    
     const targetId = forcedId || attemptId;
+
     if (submittingRef.current || !targetId) return;
 
     submittingRef.current = true;
-    setIsSubmitting(true);
     setShowConfirm(false);
 
     try {
@@ -181,8 +185,9 @@ const [isGridOpen, setIsGridOpen] = useState(false);
       });
 
       if (res.data.success) {
-          const targetPath = user ? 'dashboard/history' : 'attempt';
-          router.replace(`/${targetPath}/result/${targetId}`);
+        const targetPath = user ? 'dashboard/history' : 'attempt';
+        router.replace(`/${targetPath}/result/${targetId}`);
+        setIsSubmitting(false);
       }
     } catch (err: any) {
       console.error("Submit error:", err);
@@ -329,6 +334,13 @@ const [isGridOpen, setIsGridOpen] = useState(false);
     </>
   );
 
+  if (isSubmitting) return (
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={isSubmitting} title="submit" />
+    </>
+  );
+
 
 
   return (
@@ -346,7 +358,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
         isOpen={showConfirm}
         onClose={() => setShowConfirm(false)}
         onConfirm={() => executeSubmit()}
-        isLoading={isSubmitting}
+        isLoading={false}
         title="Akhiri Sesi Kuis?"
         description="Jawaban Anda akan dikirim untuk penilaian. Pastikan tidak ada soal yang terlewat."
       />
@@ -537,7 +549,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                           onClick={() => setCurrentIdx(idx)}
                           className={`aspect-square rounded-xl text-[11px] font-black transition-all active:scale-75 ${
                             idx === currentIdx 
-                              ? 'bg-primary-1 text-white shadow-lg shadow-primary-1/25 scale-110 z-10' 
+                              ? 'bg-gray-800 text-white shadow-lg  scale-110 z-10' 
                               : !!userAnswers[q._id]
                                 ? 'bg-emerald-500 text-white'
                                 : 'bg-slate-50 dark:bg-white/5 text-slate-400 hover:bg-slate-100'

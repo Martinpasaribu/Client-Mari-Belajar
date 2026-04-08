@@ -99,6 +99,10 @@ export default function RegisterPage() {
       }
     };
 
+    const loginGoogle = () => {
+      window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 transition-colors">
       <div className="w-full max-w-xl rounded-[2.5rem] bg-white dark:bg-slate-900 p-8 md:p-12 shadow-2xl border border-slate-100 dark:border-white/5 relative overflow-hidden">
@@ -110,8 +114,9 @@ export default function RegisterPage() {
 
         <div className="text-center mb-10">
           <AppIcon size={80} variant='circle' className="mx-auto mb-4" />
-          <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase italic tracking-tighter">
-            Join <span className="text-primary-1 text-3xl">Mari Belajar.</span>
+          <h2 className=" flex flex-col justify-center items-center font-black  tracking-tighter">
+            <span className='text-xl md:text-2xl text-slate-600 dark:text-white'>Join us</span>
+             <span className="text-primary-1 text-3xl">Mari Belajar.</span>
           </h2>
         </div>
 
@@ -191,6 +196,16 @@ export default function RegisterPage() {
             </button>
           </div>
         </form>
+
+        <button
+          onClick={loginGoogle}
+          type="button"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 py-3 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-[0.98] mt-2"
+        >
+          <img src="/assets/icon/google.png" className="h-5 w-5" alt="G" />
+          <span>Register dengan Google</span>
+        </button>
+
       </div>
     </div>
   );

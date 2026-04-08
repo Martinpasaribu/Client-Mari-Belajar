@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation"; // Gunakan next/navigati
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import Link from "next/link";
-import { ChevronRight, Book, ArrowLeft, LayoutGrid, Info, Loader2, Sparkles } from "lucide-react";
+import { ChevronRight, Book, ArrowLeft, LayoutGrid, Info, Loader2, Sparkles, TextSelection, TimerIcon } from "lucide-react";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import { MainLoading } from "@/components/modals/MainLoading";
 import { MainEmpty } from "@/components/modals/MainEmpty";
@@ -105,7 +105,7 @@ export default function BabListPage() {
             <LayoutGrid size={20} className="text-primary-1" />
           </div>
           <h2 className="text-2xl font-black uppercase tracking-tighter text-slate-800 dark:text-white">
-            Pilih <span className="text-primary-1 italic">Bab Materi</span>
+            Pilih <span className="text-primary-1 ">Bab Materi</span>
           </h2>
         </FadeInItem>
 
@@ -114,9 +114,9 @@ export default function BabListPage() {
             <FadeInItem key={bab.id || bab._id}>
               <Link 
                 href={`/dashboard/modules/${id}/${bab._id || bab.id}`}
-                className="group flex items-center justify-between p-6 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-[2rem] hover:border-primary-1 hover:shadow-2xl hover:shadow-primary-1/10 transition-all duration-300"
+                className="group flex items-center justify-between p-3 py-4 md:p-6 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/5 rounded-[2rem] hover:border-primary-1 hover:shadow-2xl hover:shadow-primary-1/10 transition-all duration-300"
               >
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4 md:gap-6">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 dark:bg-white/5 text-slate-400 group-hover:bg-primary-1 group-hover:text-white group-hover:rotate-6 transition-all duration-500">
                     <span className="text-sm font-black italic">0{index + 1}</span>
                   </div>
@@ -125,6 +125,16 @@ export default function BabListPage() {
                       {bab.name}
                     </h3>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Latihan Soal & Pembahasan</p>
+                    <div className="flex gap-1 mt-1">
+                      <div className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-white/5 border-2 border-dashed border-gray-200 dark:border-gray-500">
+                        <TextSelection size={12} className="text-primary-1" fill="currentColor" />
+                        <span className="text-[9px] font-black uppercase tracking-widest text-primary-2 dark:text-primary-1">{bab.question_keys.length} Soal</span>
+                      </div>
+                      <div className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-white/5 border-2 border-dashed border-gray-200 dark:border-gray-500">
+                        <TimerIcon size={12} className="text-primary-1" fill="currentColor" />
+                        <span className="text-[9px] font-black uppercase tracking-widest text-primary-2 dark:text-primary-1">{bab.duration} Menit</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 

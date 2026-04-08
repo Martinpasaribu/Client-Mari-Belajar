@@ -113,7 +113,7 @@ export default function CatalogDetailPage() {
             }`}>
               <Sparkles size={14} className={catalog.isFree ? "" : "animate-pulse"} />
               <div className="flex text-[10px] font-black uppercase tracking-[0.2em]">
-                <h1 className=''>Katalog</h1> 
+                <h1 className='text-primary-2'>Katalog</h1> 
                 <span className="ml-1">
                   {catalog.isFree ? (
                     <span className="text-emerald-600 dark:text-emerald-400">Freemium</span>

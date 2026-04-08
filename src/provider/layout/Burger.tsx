@@ -54,7 +54,7 @@ export default function MobileMenu({
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="fixed inset-y-0 left-0 z-[100] w-[85%] max-w-sm bg-white dark:bg-slate-900 lg:hidden flex flex-col shadow-2xl overflow-hidden"
           >
-            <div className="p-6 flex justify-between items-center border-b dark:border-white/5">
+            <div className="p-2 md:p-6 flex justify-between items-center border-b dark:border-white/5">
               <AppIcon size={40} variant="circle" />
               <button
                 onClick={onClose}
@@ -117,24 +117,42 @@ export default function MobileMenu({
               </nav>
             </div>
 
-            <div className="p-6 border-t dark:border-white/5 space-y-4 bg-slate-50/30 dark:bg-slate-900">
-              <div className="flex gap-3">
-                <button onClick={toggleTheme} className="flex-1 flex items-center justify-center gap-2 p-3.5 bg-white dark:bg-slate-800 rounded-2xl border dark:border-white/5 shadow-sm">
-                  {themeIcon}
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-700 dark:text-slate-200">{theme}</span>
-                </button>
-                <LanguageSwitcher />
-              </div>
+<div className="p-2 px-3 bg-transparent">
+  {/* Row Pengaturan: Theme, Language, & Logout dalam satu baris */}
+  <div className="flex items-center   gap-2">
+    
+    {/* Theme Switcher */}
+    <button 
+      onClick={toggleTheme} 
+      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100/50 text-slate-600 transition-all hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10"
+      title={`Mode ${theme}`}
+    >
+      {themeIcon}
+    </button>
+    
+    {/* Logout Button - Minimalis & Sejajar */}
+    {user && (
+      <button
+        onClick={() => { handleLogout(); onClose(); }}
+        className="group flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-4 bg-slate-100/50 dark:bg-white/5 text-slate-400 transition-all hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+        title="Sign Out"
+      >
+        <LogOut size={16} className="transition-transform group-hover:scale-110" />
+        {/* Teks Sign Out disembunyikan di layar sangat kecil agar tidak berantakan */}
+        <span className="hidden md:block text-[10px] font-black uppercase tracking-widest">Out</span>
+      </button>
+    )}
 
-              {user && (
-                <button
-                  onClick={() => { handleLogout(); onClose(); }}
-                  className="w-full flex items-center justify-center gap-3 p-4 text-red-500 bg-red-50 dark:bg-red-500/10 rounded-2xl font-black uppercase text-[10px] tracking-widest active:scale-95 transition-all"
-                >
-                  <LogOut size={16} /> Keluar Aplikasi
-                </button>
-              )}
-            </div>
+    {/* Language Switcher - Mengambil sisa ruang yang ada */}
+    <div className="flex w-full items-end justify-end min-w-[100px] h-full rounded-xl  dark:bg-white/5">
+      <LanguageSwitcher />
+    </div>
+
+
+  </div>
+
+</div>
+
           </motion.div>
         </>
       )}

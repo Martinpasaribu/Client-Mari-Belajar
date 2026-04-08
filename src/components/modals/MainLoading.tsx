@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Loader2, BookOpen, PenTool, Trophy, Layers, Newspaper, TablePropertiesIcon, PenLine } from "lucide-react";
+import { Loader2, BookOpen, PenTool, Trophy, Layers, Newspaper, TablePropertiesIcon, PenLine, AccessibilityIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface MainLoaderProps {
@@ -19,6 +19,11 @@ export const MainLoading = ({ isOpen, title = "general" }: MainLoaderProps) => {
       icon: <BookOpen className="text-primary-1" size={28} />,
       text: "Membuka Bab Soal...",
       subText: "Sedang mengambil data bab soal terbaru"
+    },
+    submit: {
+      icon: <AccessibilityIcon className="text-primary-1" size={28} />,
+      text: "Mengirim Jawaban...",
+      subText: "Sedang memproses jawabanmu"
     },
     modules: {
       icon: <TablePropertiesIcon className="text-primary-1" size={28} />,

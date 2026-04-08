@@ -69,6 +69,7 @@ export default function AttemptsPage() {
                   <TimerIcon size={12} className="text-white" fill="currentColor" />
                   <span className="text-[9px] font-black uppercase tracking-widest text-white">{data.bab.duration} menit</span>
                 </div>
+
               </div>
               <div>
                 <h2 className="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">Materi Bab:</h2>
