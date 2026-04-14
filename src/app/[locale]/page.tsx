@@ -6,7 +6,9 @@ import React, { useState, useEffect } from "react";
 import { 
   PlayCircle, ArrowRight, BookOpen, 
   Zap, Star, LayoutGrid, Quote, 
-  Search, Trophy, Users, CheckCircle2
+  Search, Trophy, Users, CheckCircle2,
+  Crown,
+  GraduationCap
 } from "lucide-react";
 import api from "@/lib/axios";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
@@ -109,51 +111,106 @@ const stats = [
     <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 text-zinc-900 dark:text-zinc-100 selection:bg-primary-1 selection:text-white transition-colors duration-300">
       
       {/* HERO SECTION */}
-      <section className="pt-2 md:pt-32 md:pb-20 px-6 relative overflow-hidden min-h-[100hv]">
-        <FadeInContainer className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-          <FadeInItem>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-1/10 border border-primary-1/20 text-primary-1 text-xs font-black uppercase tracking-widest">
-              🎯 Platform Latihan Soal No. 1
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-12 md:pt-20 pb-16 md:pt-32 md:pb-24 px-6 overflow-hidden">
+        {/* Background Decor - Elemen estetik di belakang */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-1/10 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary-2/10 blur-[100px] rounded-full" />
+        </div>
+
+        <FadeInContainer className="max-w-6xl mx-auto relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            
+            {/* KIRI: CONTENT */}
+            <div className="text-center lg:text-left space-y-8">
+              <FadeInItem>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 dark:bg-dark-bg2/50 backdrop-blur-md border border-primary-1/20 shadow-sm">
+                  <span className="flex h-2 w-2 rounded-full bg-primary-1 animate-ping" />
+                  <span className="text-primary-1 text-[10px] md:text-xs font-black uppercase tracking-[0.2em]">
+                    🎯 Platform Latihan Soal No. 1
+                  </span>
+                </div>
+              </FadeInItem>
+
+              <FadeInItem>
+                <h1 className="relative text-3xl md:text-7xl font-black tracking-tighter leading-[1.05] text-slate-800 dark:text-white uppercase ">
+                  Asah <span className="text-primary-1 not-italic">Kemampuanmu</span> <br />
+                    {/* Floating Mini Badges */}
+                  <div className="absolute -right-8 top-8 p-3 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-white/10 rotate-12 animate-bounce-slow">
+                    <GraduationCap className="text-primary-1" size={24} />
+                  </div>
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-1 via-primary-2 to-primary-1 bg-[length:200%_auto] animate-gradient-x">
+                    Tanpa Batas.
+                  </span>
+                </h1>
+              </FadeInItem>
+
+              <FadeInItem>
+                <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
+                  Temukan bank soal terlengkap untuk sekolah, kuliah, hingga persiapan kerja dengan pembahasan mendalam dan sistematis.
+                </p>
+              </FadeInItem>
+
+              <FadeInItem className="flex flex-col sm:flex-row items-center gap-4">
+                <Link href={'/category'} className="group w-full sm:w-auto px-8 py-4 bg-primary-1 text-white rounded-[2rem] font-bold text-lg hover:shadow-2xl hover:shadow-primary-1/40 transition-all flex items-center justify-center gap-3 active:scale-95">
+                  Mulai Latihan 
+                  <div className="bg-white/20 p-1 rounded-full group-hover:rotate-[-45deg] transition-transform">
+                    <ArrowRight size={20} />
+                  </div>
+                </Link>
+                
+                <div className="relative w-full sm:w-72 group">
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary-1 transition-colors" size={20} />
+                  <input 
+                    type="text" 
+                    placeholder="Cari materi..." 
+                    className="w-full pl-14 pr-6 py-4 bg-white dark:bg-dark-bg2 border border-slate-200 dark:border-white/10 rounded-[2rem] focus:outline-none focus:ring-4 focus:ring-primary-1/10 transition-all shadow-sm"
+                  />
+                </div>
+              </FadeInItem>
+
+              {/* STATS - Gaya Modern Minimalis */}
+              <FadeInItem className="grid grid-cols-3 gap-6 pt-6 border-t border-slate-100 dark:border-white/5">
+                {stats.map((s, i) => (
+                  <div key={i} className="flex flex-col items-center lg:items-start gap-1">
+                    <span className="font-black text-2xl md:text-3xl text-slate-800 dark:text-white leading-none tracking-tighter">
+                      {s.value}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-widest text-primary-1 font-black ">
+                      {s.label}
+                    </span>
+                  </div>
+                ))}
+              </FadeInItem>
             </div>
-          </FadeInItem>
-          <FadeInItem>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-[1.1]">
-              Asah Kemampuanmu <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-b from-primary-1 to-primary-2">
-                Dengan Puluhan Ribu Soal
-              </span>
-            </h1>
-          </FadeInItem>
-          <FadeInItem>
-            <p className="text-zinc-500 dark:text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
-              Temukan bank soal terlengkap untuk sekolah, kuliah, hingga persiapan kerja dengan pembahasan mendalam.
-            </p>
-          </FadeInItem>
-          <FadeInItem className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link href={'/category'} className="w-full sm:w-auto px-10 py-4 bg-primary-1 dark:bg-primary-2 text-white rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-primary-1/20 transition-all flex items-center justify-center gap-2 group
-                duration-300 ease-out hover:bg-primary-2 hover:dark:bg-primary-1
-                active:scale-95 active:translate-y-0.5 active:shadow-inner
-            ">
-              Mulai Latihan <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <div className="relative w-full sm:w-80">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-               <input 
-                type="text" 
-                placeholder="Cari materi soal..." 
-                className="w-full pl-12 pr-4 py-4 bg-bg2 dark:bg-dark-bg2 border border-slate-200 dark:border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-1/50"
-               />
-            </div>
-          </FadeInItem>
-          <FadeInItem className="grid grid-cols-3 gap-4 pt-12 max-w-3xl mx-auto">
-            {stats.map((s, i) => (
-              <div key={i} className="flex flex-col items-center p-4 rounded-2xl bg-bg2/50 dark:bg-dark-bg2/50 border border-slate-100 dark:border-slate-800 transition-all hover:scale-105">
-                <s.icon className="text-primary-1 mb-2" size={20} />
-                <span className="font-black text-xl">{s.value}</span>
-                <span className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{s.label}</span>
+
+            {/* KANAN: IMAGE ASSET */}
+            <FadeInItem className="relative hidden lg:flex items-center justify-center">
+              {/* Lingkaran Dekorasi di belakang gambar */}
+              <div className="absolute w-[80%] h-[80%] bg-gradient-to-tr from-primary-1/20 to-transparent rounded-full blur-3xl animate-pulse" />
+              
+              <div className="relative z-10 w-full max-w-[450px] animate-float">
+                <img 
+                  src="assets/animation/icon/a2.png" 
+                  alt="Hero Icon" 
+                  className="w-full h-auto drop-shadow-[0_35px_35px_rgba(var(--primary-1-rgb),0.3)]"
+                />
+                
+                {/* Floating Badge di sekitar gambar */}
+                <div className="absolute -top-4 -right-4 bg-white dark:bg-dark-bg2 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-white/10 animate-bounce-slow">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-400 rounded-lg text-white"><Crown size={20} /></div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-black uppercase text-slate-400">Quality</span>
+                      <span className="text-xs font-bold">Premium Soal</span>
+                    </div>
+                  </div>
+                </div>
+
               </div>
-            ))}
-          </FadeInItem>
+            </FadeInItem>
+
+          </div>
         </FadeInContainer>
       </section>
 
@@ -196,14 +253,14 @@ const stats = [
                           <LayoutGrid size={32} strokeWidth={2.5} />
                         </div>
                         <div className="text-right">
-                          <span className="block text-[20px] font-black text-slate-900 dark:text-white leading-none italic">0{subCategories.filter((sub: any) => sub.category_key === cat._id).length}</span>
+                          <span className="block text-[20px] font-black text-slate-900 dark:text-white leading-none ">0{subCategories.filter((sub: any) => sub.category_key === cat._id).length}</span>
                           <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Modul</span>
                         </div>
                       </div>
 
                       {/* Category Identity */}
                       <div className="mb-8 flex-1">
-                        <h3 className="text-2xl md:text-3xl font-black mb-3 tracking-tight group-hover:text-primary-1 transition-colors uppercase italic dark:text-white">
+                        <h3 className="text-2xl md:text-3xl font-black mb-3 tracking-tight group-hover:text-primary-1 transition-colors uppercase  dark:text-white">
                           {cat.name}
                         </h3>
                         <p className="text-xs text-slate-400 font-medium leading-relaxed max-w-[200px]">
@@ -262,23 +319,58 @@ const stats = [
             </div>
           </FadeInItem>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {isLoading ? Array(8).fill(0).map((_, i) => (
-              <div key={i} className="h-16 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-2xl" />
-            )) : subCategories.map((sub: any) => (
-              <FadeInItem key={sub._id}>
-                <div 
-                  className="group flex items-center justify-between p-4 rounded-2xl bg-bg2 dark:bg-dark-bg2 border border-slate-100 dark:border-slate-800 hover:bg-primary-1 hover:text-white transition-all cursor-pointer shadow-sm hover:shadow-primary-1/20"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-xs opacity-50 font-bold uppercase tracking-tighter mb-0.5">Materi</span>
-                    <span className="font-bold text-sm md:text-base leading-tight">{sub.name}</span>
-                  </div>
-                  <ArrowRight size={18} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all shrink-0" />
-                </div>
-              </FadeInItem>
-            ))}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+  {isLoading ? (
+    Array(8).fill(0).map((_, i) => (
+      <div key={i} className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-3xl" />
+    ))
+  ) : (
+    subCategories.map((sub: any) => (
+      <FadeInItem key={sub._id}>
+        <div 
+          className="group relative flex flex-col p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary-1/50 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl hover:shadow-primary-1/10 hover:-translate-y-1 overflow-hidden"
+        >
+          {/* Decorative Background Blob on Hover */}
+          <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary-1/5 rounded-full blur-2xl group-hover:bg-primary-1/20 transition-colors" />
+
+          <div className="flex justify-between items-start mb-4">
+            {/* Icon Placeholder / Category Badge */}
+            <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary-1 group-hover:bg-primary-1 group-hover:text-white transition-colors duration-300">
+              <BookOpen size={20} /> {/* Ganti dengan ikon yang relevan */}
+            </div>
+            
+            {/* User Stats Badge */}
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"> 
+              <Users size={12} className="text-slate-400 group-hover:text-primary-1" /> 
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                {sub.enrolled_users?.length || 0}
+              </span>
+            </div>
           </div>
+
+          <div className="space-y-1">
+            <p className="text-[10px] font-black uppercase tracking-widest text-primary-1 opacity-80">
+              Materi Modul
+            </p>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base leading-snug group-hover:text-primary-1 transition-colors">
+              {sub.name}
+            </h3>
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+            <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+              Lihat Detail
+            </span>
+            <div className="p-1.5 rounded-lg bg-primary-1/10 text-primary-1 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+              <ArrowRight size={16} strokeWidth={3} />
+            </div>
+          </div>
+        </div>
+      </FadeInItem>
+    ))
+  )}
+</div>
+
         </FadeInContainer>
       </section>
 
@@ -292,7 +384,7 @@ const stats = [
             <p className="text-white/70 text-lg">
               Sistem kami menganalisis setiap jawabanmu untuk memberikan statistik akurat mengenai kelemahan dan kekuatanmu di setiap materi.
             </p>
-            <div className="grid grid-cols-2 gap-6">
+            <div className="flex flex-col md:flex-row gap-4 ">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-white/10 rounded-xl"><Trophy className="text-primary-1" /></div>
                 <div>

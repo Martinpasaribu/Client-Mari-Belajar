@@ -48,7 +48,22 @@
     background-color: var(--color-bg2);
     @apply transition-colors duration-300 ease-in-out;
   }
+
+    .prose .has-text-align-center {
+    text-align: center;
+  }
+  .prose .has-text-align-right {
+    text-align: right;
+  }
+  .prose ul {
+    list-style-type: disc !important;
+  }
+  .prose ol {
+    list-style-type: decimal !important;
+  }
 }
+
+
 
 /* Mencegah animasi saat awal load agar tidak berkedip */
 .preload * {
@@ -57,3 +72,16 @@
   -ms-transition: none !important;
   -o-transition: none !important;
 }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .animate-bounce-slow {
+    animation: float 4s ease-in-out infinite;
+    animation-delay: 1s;
+  }

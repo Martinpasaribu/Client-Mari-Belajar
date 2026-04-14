@@ -30,6 +30,7 @@ import { MainLoading } from '@/components/modals/MainLoading';
 import { useAuthStore } from '@/store/useAuthStore';
 import { ActiveAttemptModal } from '@/components/modals/ActiveAttemptModal';
 import { motion } from 'framer-motion';
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function QuizAttemptPage() {
   const router = useRouter();
@@ -218,9 +219,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
   const renderMediaContent = (q: any) => {
     return (
       <div className="space-y-6 mb-8">
-        <h2 className="select-none text-sm md:text-xl md:text-2xl text-slate-800 dark:text-slate-100 leading-relaxed font-bold">
-          {q?.question_text}
-        </h2>
+        <RichTextDisplay content={q?.question_text} />
 
         {/* Multimedia: Image (Tipe 4) */}
         {q?.question_images && q.question_images.length > 0 && (
@@ -549,7 +548,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                           onClick={() => setCurrentIdx(idx)}
                           className={`aspect-square rounded-xl text-[11px] font-black transition-all active:scale-75 ${
                             idx === currentIdx 
-                              ? 'bg-gray-800 text-white shadow-lg  scale-110 z-10' 
+                              ? 'bg-gray-800  text-white dark:bg-white dark:text-black shadow-lg  scale-110 z-10' 
                               : !!userAnswers[q._id]
                                 ? 'bg-emerald-500 text-white'
                                 : 'bg-slate-50 dark:bg-white/5 text-slate-400 hover:bg-slate-100'
@@ -588,7 +587,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                     key={q._id}
                     onClick={() => { setCurrentIdx(idx); setIsGridOpen(false); }}
                     className={`aspect-square rounded-2xl text-xs font-black transition-all active:scale-75 ${
-                      idx === currentIdx ? 'bg-primary-1 text-white shadow-xl' :
+                      idx === currentIdx ? 'bg-gray-800 text-white dark:bg-white dark:text-black shadow-xl' :
                       !!userAnswers[q._id] ? 'bg-emerald-500 text-white' : 'bg-slate-100 dark:bg-white/5 text-slate-400'
                     }`}
                   >

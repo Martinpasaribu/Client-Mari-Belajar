@@ -14,7 +14,12 @@ export default function SubCategoryPage() {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
+
+    // PAKSA SCROLL KE ATAS SAAT MOUNT
+    window.scrollTo(0, 0);
+
     const fetchSubCategories = async () => {
       try {
         const res = await api.get(`/sub-categories/category/${params.id}`);
@@ -71,7 +76,7 @@ export default function SubCategoryPage() {
                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1">Modul Materi</span>
               </div>
 
-              <h1 className="mb-6 text-4xl font-black tracking-tighter text-white md:text-6xl italic uppercase">
+              <h1 className="mb-6 text-4xl font-black tracking-tighter text-white md:text-6xl uppercase">
                 {data.name}
               </h1>
               <p className="max-w-xl text-lg font-medium leading-relaxed text-slate-300">
@@ -105,7 +110,7 @@ export default function SubCategoryPage() {
                 "
               >
                 {/* Number Decor - Hidden on Mobile to save space */}
-                <div className="hidden lg:flex text-6xl font-black text-primary-2 opacity-[0.03] absolute left-6 group-hover:text-primary-1 group-hover:opacity-10 transition-all duration-500 italic">
+                <div className="hidden lg:flex text-6xl font-black text-primary-2 opacity-[0.03] absolute left-6 group-hover:text-primary-1 group-hover:opacity-10 transition-all duration-500">
                   {String(idx + 1).padStart(2, '0')}
                 </div>
 
@@ -117,7 +122,7 @@ export default function SubCategoryPage() {
                 {/* Content - Full width on Mobile */}
                 <div className="flex-1 relative z-10 w-full">
                   <div className="flex items-center justify-between sm:justify-start gap-3">
-                    <h4 className="text-lg md:text-xl font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-primary-1 uppercase italic leading-tight">
+                    <h4 className="text-lg md:text-xl font-black tracking-tight text-slate-800 dark:text-white transition-colors group-hover:text-primary-1 uppercase leading-tight">
                       {sub.name}
                     </h4>
                     {/* Mobile Only Chevron indicator */}
@@ -127,7 +132,7 @@ export default function SubCategoryPage() {
                   <div className="mt-1 md:mt-2 flex items-center gap-4">
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
                       <GraduationCap className="text-primary-1 w-4 h-4" />
-                      <span className="text-[10px] md:text-xs font-bold italic tracking-wide line-clamp-1">
+                      <span className="text-[10px] md:text-xs font-bold tracking-wide line-clamp-1">
                         {sub.sub_description || "Jelajahi materi pembelajaran lengkap di kategori ini."}
                       </span>
                     </div>
@@ -152,7 +157,7 @@ export default function SubCategoryPage() {
                 <div className="mb-4 rounded-full bg-slate-50 dark:bg-dark-bg1 p-5 md:p-6 text-slate-300 animate-pulse">
                   <Layers className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
-                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400 italic">No Content Available Yet</p>
+                <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-slate-400">No Content Available Yet</p>
               </div>
             </FadeInItem>
           )}

@@ -25,6 +25,7 @@ import {
 import api from '@/lib/axios';
 import { useAuthStore } from '@/store/useAuthStore';
 import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function GuestQuizResultPage() {
   const params = useParams();
@@ -161,7 +162,7 @@ const getRating = (score: number) => {
   const skipped_count = answers?.filter((a: any) => !a.answer_given || a.answer_given === "").length || 0;
 
   return (
-    <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 pb-24 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-bg1 dark:bg-transparent pb-24 font-sans transition-colors duration-300">
       
       {/* GUEST BANNER */}
       <div className="bg-primary-2 dark:bg-dark-primary-2 text-white py-2 px-6 flex justify-center items-center gap-3 shadow-md z-[60] relative">
@@ -169,7 +170,7 @@ const getRating = (score: number) => {
         <span className="text-[10px] font-black uppercase tracking-[0.2em]">Mode Tamu: Progres tidak tersimpan permanen</span>
       </div>
 
-      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4 sticky top-0 z-50">
+      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-3 md:px-6 py-2 md:py-4 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto flex justify-between items-center gap-5">
           <button onClick={() => router.back()} className="flex items-center gap-2 text-slate-400 hover:text-primary-1 font-black text-[10px] uppercase tracking-widest transition-all">
             <ArrowLeft size={16} /> Kembali
@@ -287,7 +288,8 @@ const getRating = (score: number) => {
 
                   {renderQuestionMedia(q)}
 
-                  <p className="text-xl text-slate-800 dark:text-slate-100 font-bold leading-tight mb-10">{q?.question_text}</p>
+
+                  <RichTextDisplay content={q?.question_text} />
 
                   <div className={isImageOptions ? "grid grid-cols-2 md:grid-cols-5 gap-4" : "grid grid-cols-1 gap-4"}>
                     {q?.options?.map((opt: any) => (
@@ -308,7 +310,7 @@ const getRating = (score: number) => {
                         <span className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-400">Discussion</span>
                       </div>
                       <div className="bg-bg2 dark:bg-dark-bg1 p-8 rounded-[2.5rem] text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-l-4 border-primary-1 font-medium italic">
-                        {q?.discussion_text}
+                        <RichTextDisplay content={q?.discussion_text} />
                       </div>
                     </div>
                   )}

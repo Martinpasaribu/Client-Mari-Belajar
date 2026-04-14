@@ -96,7 +96,7 @@ export default function BabPage() {
             </div>
           </div>
 
-          <h1 className="text-3xl md:text-6xl font-black tracking-tighter text-foreground dark:text-white mb-4 md:mb-6 uppercase italic leading-[0.9]">
+          <h1 className="text-2xl md:text-5xl font-black tracking-tighter text-dark-primary-2 dark:text-white mb-4 md:mb-6 uppercase leading-[0.9] break-words">
              {data?.sub_category?.name || "Materi Belajar"}
           </h1>
           
@@ -139,7 +139,7 @@ export default function BabPage() {
                   {/* Info Content */}
                   <div className="flex-1 w-full overflow-hidden">
                     <div className="flex items-center justify-between sm:justify-start gap-3 mb-2 md:mb-3">
-                       <h4 className="text-lg md:text-xl font-black tracking-tight uppercase text-foreground dark:text-white group-hover:text-primary-1 transition-colors truncate">
+                       <h4 className="text-lg md:text-xl font-black tracking-tight uppercase text-foreground dark:text-white group-hover:text-primary-1 transition-colors ">
                         {bab.name}
                       </h4>
                       {bab.isFree && (

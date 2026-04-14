@@ -179,9 +179,13 @@ export default function DashboardPage() {
                                   </div>
                                   <div className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[9px] font-black uppercase tracking-widest border border-emerald-500/20">Active</div>
                                 </div>
-                                <h3 className="text-md md:text-2xl font-black text-slate-900 dark:text-white mb-2 leading-tight group-hover:text-primary-1 transition-colors">
+                                <h3 
+                                  className="text-md md:text-2xl font-black text-slate-900 dark:text-white mb-2  group-hover:text-primary-1 transition-colors  leading-tight uppercase tracking-tighter line-clamp-2 truncate">
                                   {enroll.sub_category_key?.name}
                                 </h3>
+                                {/* <h3 className="text-md md:text-2xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-primary-1 transition-colors leading-tight uppercase tracking-tighter line-clamp-2">
+                                  {enroll.sub_category_key?.name}
+                                </h3> */}
                                 <div className="mt-auto pt-4 md:pt-6 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
                                   <div className="flex items-center gap-2 text-slate-400 text-[11px] font-bold uppercase tracking-tighter">
                                     <Clock size={14} className="text-dark-primary-2" />

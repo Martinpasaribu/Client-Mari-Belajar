@@ -107,82 +107,97 @@ export default function CatalogDetailPage() {
                   </button>
                 </FadeInItem>
 
-                <div className="grid lg:grid-cols-2 gap-16 items-start">
-                  <div className="space-y-8">
-
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start px-4 sm:px-0">
+                {/* KOLOM KIRI: Konten Utama */}
+                <div className="space-y-6 lg:space-y-8">
                   <FadeInItem>
                     <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white dark:bg-white/5 border shadow-sm ${
                       catalog.isFree 
-                      ? 'border-emerald-500/20 text-white' 
-                      : 'border-primary-1/20 text-white'
+                      ? 'border-emerald-500/20' 
+                      : 'border-primary-1/20'
                     }`}>
-                      <Sparkles size={14} className={catalog.isFree ? "text-primary-2" : "text-primary-2 animate-pulse"} />
-                      <div className="flex text-[10px] font-black uppercase tracking-[0.2em]">
-                        <h1 className='text-primary-2'>Katalog</h1> 
-                        <span className="ml-1">
+                      <Sparkles size={14} className={catalog.isFree ? "text-emerald-500" : "text-primary-1 animate-pulse"} />
+                      <div className="flex text-[10px] font-black uppercase tracking-[0.2em] items-center">
+                        <span className='text-slate-400 dark:text-slate-500'>Katalog</span> 
+                        <span className="ml-2 py-0.5 px-2 rounded-md bg-slate-100 dark:bg-white/10">
                           {catalog.isFree ? (
                             <span className="text-emerald-600 dark:text-emerald-400">Freemium</span>
                           ) : (
-                            <span className='text-blue-600 dark:text-blue-400'>Premium</span>
+                            <span className='text-primary-1'>Premium</span>
                           )}
                         </span>
                       </div>
                     </div>
                   </FadeInItem>
-                    
-                    <FadeInItem>
-                      <h1 className="text-5xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[0.95] tracking-tighter uppercase ">
-                        {catalog.name.split(' ').map((word: string, i: number) => (
-                          <span key={i} className={i === 1 ? "text-primary-1" : ""}>{word} </span>
-                        ))}
-                      </h1>
-                    </FadeInItem>
-                    
-                    <FadeInItem>
-                      <p className="text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl font-medium">
-                        {catalog.description || "Mastering the craft with our expert-led curriculum designed for the next generation of leaders."}
-                      </p>
-                    </FadeInItem>
 
-                    <FadeInItem className="flex flex-wrap gap-8 py-6 border-y border-slate-100 dark:border-white/5">
-                      <Stat icon={<PlayCircle size={20} />} label={`${syllabus.length} Bab Materi`} />
-                      <Stat icon={<FileText size={20} />} label="Latihan Soal" />
-                      <Stat icon={<Clock size={20} />} label="Life-time" />
-                    </FadeInItem>
-                  </div>
 
-                  <ScaleIn className="relative">
-                    <div className="absolute inset-0 bg-primary-1/30 blur-[100px] rounded-full opacity-20 -z-10 animate-pulse"></div>
-                    <div className="bg-white dark:bg-dark-bg2 border border-slate-200 dark:border-white/10 rounded-[3.5rem] p-10 lg:p-14 shadow-2xl relative overflow-hidden">
-                      {/* Card Decor */}
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary-1/10 rounded-bl-[5rem] -mr-10 -mt-10" />
-                      
-                      <div className="relative z-10">
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Investasi Masa Depan</p>
-                        <div className="flex items-baseline gap-2 mb-10">
-                          <h2 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter">
-                            {catalog.isFree ? "FREE" : `IDR ${catalog.price?.toLocaleString('id-ID')}`}
-                          </h2>
-                          {!catalog.isFree && <span className="text-slate-400 font-bold text-sm">/ Modul</span>}
-                        </div>
+                                    
+                  <FadeInItem>
+                    {/* Ubah text-3xl menjadi text-xl atau text-2xl di mobile.
+                      Gunakan leading-tight agar jarak baris lebih rapat untuk judul/nama.
+                      Gunakan break-words untuk menjaga kata panjang tidak melewati container.
+                    */}
+                    <p className="text-xl sm:text-2xl lg:text-4xl text-slate-500 dark:text-slate-400 leading-tight lg:leading-relaxed max-w-xl font-bold break-words">
+                      {catalog.name.split(' ').map((word: string, i: number) => (
+                        <span key={i} className={`${i === 1 ? "text-primary-1" : ""} inline-block mr-2`}>
+                          {word}
+                        </span>
+                      ))}
+                    </p>
+                  </FadeInItem>
 
-                        <div className="space-y-5 mb-12">
-                          <Benefit text="Sertifikat Standar Industri" />
-                          <Benefit text="Konsultasi Langsung Mentor" />
-                          <Benefit text="Update Materi Selamanya" />
-                        </div>
+                  <FadeInItem>
+                    {/* Deskripsi sebaiknya lebih kecil dari judul agar hirarki visualnya bagus */}
+                    <p className="text-base lg:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl font-medium mt-4">
+                      {catalog.description || "Mastering the craft with our expert-led curriculum designed for the next generation of leaders."}
+                    </p>
+                  </FadeInItem>
 
-                        <button 
-                          onClick={() => setIsConfirmOpen(true)}
-                          className="w-full py-6 bg-slate-900 dark:bg-primary-1 text-white rounded-[2rem] font-black text-[10px] uppercase tracking-[0.3em] shadow-2xl shadow-primary-1/20 hover:scale-[1.03] active:scale-[0.97] transition-all flex items-center justify-center gap-3 group"
-                        >
-                          Daftar Sekarang
-                          <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
-                        </button>
-                      </div>
-                    </div>
-                  </ScaleIn>
+                  <FadeInItem className="grid grid-cols-2 sm:flex sm:flex-wrap gap-4 lg:gap-8 py-6 border-y border-slate-100 dark:border-white/5">
+                    <Stat icon={<PlayCircle size={18} className="text-primary-1" />} label={`${syllabus.length} Bab`} />
+                    <Stat icon={<FileText size={18} className="text-primary-1" />} label="Latihan" />
+                    <Stat icon={<Clock size={18} className="text-primary-1" />} label="Life-time" />
+                  </FadeInItem>
                 </div>
+
+                {/* KOLOM KANAN: Card Investasi */}
+                <ScaleIn className="relative w-full">
+                  <div className="absolute inset-0 bg-primary-1/30 blur-[80px] lg:blur-[100px] rounded-full opacity-20 -z-10 animate-pulse"></div>
+                  
+                  {/* Perbaikan: rounded dan padding adaptif. 
+                    Mobile: p-8, rounded-3xl. Desktop: p-14, rounded-[3.5rem].
+                  */}
+                  <div className="bg-white dark:bg-dark-bg2 border border-slate-200 dark:border-white/10 rounded-[2.5rem] lg:rounded-[3.5rem] p-8 lg:p-14 shadow-2xl relative overflow-hidden">
+                    {/* Card Decor - Sembunyikan di mobile agar tidak mengganggu teks */}
+                    <div className="hidden sm:block absolute top-0 right-0 w-32 h-32 bg-primary-1/5 rounded-bl-[5rem] -mr-10 -mt-10" />
+                    
+                    <div className="relative z-10">
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Investasi Masa Depan</p>
+                      
+                      <div className="flex flex-wrap items-baseline gap-2 mb-8 lg:mb-10">
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tighter">
+                          {catalog.isFree ? "FREE" : `IDR ${catalog.price?.toLocaleString('id-ID')}`}
+                        </h2>
+                        {!catalog.isFree && <span className="text-slate-400 font-bold text-xs lg:text-sm">/ Modul</span>}
+                      </div>
+
+                      <div className="space-y-4 lg:space-y-5 mb-8 lg:mb-12">
+                        <Benefit text="Sertifikat Standar Industri" />
+                        <Benefit text="Konsultasi Langsung Mentor" />
+                        <Benefit text="Update Materi Selamanya" />
+                      </div>
+
+                      <button 
+                        onClick={() => setIsConfirmOpen(true)}
+                        className="w-full py-5 lg:py-6 bg-slate-900 dark:bg-primary-1 text-white rounded-2xl lg:rounded-[2rem] font-black text-[10px] lg:text-[11px] uppercase tracking-[0.2em] lg:tracking-[0.3em] shadow-xl hover:shadow-primary-1/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
+                      >
+                        Daftar Sekarang
+                        <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                      </button>
+                    </div>
+                  </div>
+                </ScaleIn>
+              </div>
 
                 {/* CURRICULUM SECTION - Sekarang menggunakan data syllabus asli */}
                 <div className="mt-32">

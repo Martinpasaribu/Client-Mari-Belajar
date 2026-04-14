@@ -74,7 +74,7 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
       <nav className={`sticky top-0 z-50 transition-all duration-500 ${
         isScrolled 
           ? "bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-md border-b border-slate-100 dark:border-white/5 py-0 shadow-lg shadow-slate-200/20" 
-          : "bg-transparent border-b border-transparent py-2"
+          : "bg-transparent border-b border-transparent py-0.5 md:py-2"
       }`}>
        
        {isLoading && <LogoutLoading />}
@@ -92,7 +92,7 @@ export default function Navbar({ variant = "guest" }: { variant?: "guest" | "das
                     <AppIcon variant="circle" width={isScrolled ? 80 : 70} height={70} className="transition-all duration-500"/>
                   </Link>
               ) : (
-                <div /> 
+                <h1>-</h1>
               )}
             </div>
 

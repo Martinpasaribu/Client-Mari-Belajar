@@ -29,7 +29,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <SidebarDashboard /> {/* Sidebar Kiri */}
         <div className="flex flex-col flex-1 overflow-hidden">
           <Navbar variant="dashboard" /> {/* Navbar atas versi dashboard */}
-          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <main className="flex-1 overflow-y-auto p-3 md:p-8">
             {children}
           </main>
           {/* <Footer/> */}

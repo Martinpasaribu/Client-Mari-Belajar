@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import api from '@/lib/axios';
 import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function QuizResultPage() {
   const params = useParams();
@@ -151,10 +152,10 @@ export default function QuizResultPage() {
   const skipped_count = answers?.filter((a: any) => !a.answer_given || a.answer_given === "").length || 0;
 
   return (
-    <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 pb-24 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-bg1 dark:bg-transparent pb-24 font-sans transition-colors duration-300">
       
       {/* NAVBAR */}
-      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-6 py-4 sticky top-0 z-30">
+      <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-3 md:px-6 py-2 md:py-4 sticky -top-0.5 z-30 rounded-2xl">
         <div className="max-w-5xl mx-auto flex justify-between items-center gap-5">
           <button 
             onClick={() => router.push(`/dashboard/modules/bab/${bab_key?._id || bab_key?.id}`)}
@@ -278,9 +279,7 @@ export default function QuizResultPage() {
 
                   {renderQuestionMedia(q)}
 
-                  <p className="text-lg md:text-xl text-slate-800 dark:text-slate-100 font-bold leading-tight mb-10">
-                    {q?.question_text}
-                  </p>
+                  <RichTextDisplay content={q?.question_text} />
 
                   <div className={isImageOptions ? "grid grid-cols-2 md:grid-cols-5 gap-4" : "grid grid-cols-1 gap-4"}>
                     {q?.options?.map((opt: any) => (
@@ -301,7 +300,7 @@ export default function QuizResultPage() {
                         <span className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-400">Discussion</span>
                       </div>
                       <div className="bg-slate-50 dark:bg-white/5 p-8 rounded-[2rem] text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic border-l-4 border-primary-1">
-                        {q?.discussion_text}
+                        <RichTextDisplay content={q?.discussion_text} />
                       </div>
                     </div>
                   )}

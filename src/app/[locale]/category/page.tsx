@@ -3,17 +3,24 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutGrid, Sparkles, BookOpen } from "lucide-react";
+import { LayoutGrid, Sparkles, BookOpen, MousePointer2, Zap, ShieldCheck } from "lucide-react"; // Tambah icon pendukung
 import { CategoryCard } from "@/components/card/CategoryCard";
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
+import { motion, useScroll, useTransform } from "framer-motion";
 import api from "@/lib/axios";
+import { MainLoading } from "@/components/modals/MainLoading";
 
 export default function CategoryPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  
+  const { scrollY } = useScroll();
+  const y1 = useTransform(scrollY, [0, 500], [0, 200]);
+  const y2 = useTransform(scrollY, [0, 500], [0, -150]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchCategories = async () => {
       try {
         const res = await api.get("/categories");
@@ -28,59 +35,110 @@ export default function CategoryPage() {
     fetchCategories();
   }, []);
 
-  if (isLoading)
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-bg1 dark:bg-dark-bg1">
-        <div className="relative">
-          <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary-1/20 border-t-primary-1"></div>
-          <LayoutGrid className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-1" size={20} />
-        </div>
-        <p className="mt-4 text-primary-2 dark:text-primary-1 font-black text-[10px] uppercase tracking-[0.3em] animate-pulse">
-          Memuat Library...
-        </p>
-      </div>
-    );
+  if (isLoading) return (
+    <>
+    {/* GLOBAL LOADER */}
+      <MainLoading isOpen={isLoading} title="category" />
+    </>
+  );
 
   return (
-    <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 transition-colors duration-500">
-      {/* Dekorasi Background Subtle */}
-      <div className="fixed top-0 right-0 w-[500px] h-[500px] bg-primary-1/5 blur-[120px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-0 left-0 w-[500px] h-[500px] bg-primary-2/5 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen bg-bg1 dark:bg-dark-bg1 transition-colors duration-500 overflow-hidden">
+      
+      {/* BACKGROUND ELEMENTS */}
+      <motion.div style={{ y: y1 }} className="fixed top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary-1/5 blur-[120px] rounded-full pointer-events-none z-0" />
+      <motion.div style={{ y: y2 }} className="fixed bottom-[10%] left-[-5%] w-[500px] h-[500px] bg-primary-2/5 blur-[100px] rounded-full pointer-events-none z-0" />
 
-      <FadeInContainer className="relative z-10 max-w-6xl mx-auto px-6 md:px-10 py-16">
+      <FadeInContainer className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-9 md:py-28">
         
-        {/* Header Section */}
-        <header className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
-          <FadeInItem className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-1/10 text-primary-1 mb-6">
-              <Sparkles size={14} />
-              <span className="text-[10px] font-black uppercase tracking-widest">Platform E-Learning</span>
-            </div>
+        {/* TOP SECTION: KIRI (TEKS) - TENGAH (ICON) - KANAN (STATS) */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-6 mb-24">
+          
+          {/* SISI KIRI: Branding & Headline */}
+          <div className="flex-1 space-y-6 text-center lg:text-left">
+            <FadeInItem>
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-1/5 border border-primary-1/10 rounded-lg shadow-sm">
+                <Sparkles size={14} className="text-primary-1" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-1">Premium Course</span>
+              </div>
+            </FadeInItem>
             
-            <h1 className="text-5xl md:text-6xl font-black text-primary-2 dark:text-white tracking-tighter mb-6 leading-none uppercase">
-              E-Learning <span className="text-primary-1">Library.</span>
-            </h1>
+            <FadeInItem>
+              <h1 className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white tracking-tighter leading-[0.8] uppercase ">
+                Collection <br />
+                <span className="text-primary-1 not-italic">Library.</span>
+              </h1>
+              <p className="mt-6 text-slate-500 dark:text-slate-400 font-medium text-sm md:text-base max-w-sm mx-auto lg:mx-0 leading-relaxed">
+                Koleksi modul belajar interaktif untuk mengasah skill digital kamu secara terarah.
+              </p>
+            </FadeInItem>
+          </div>
+
+          {/* SISI TENGAH: THE ICONIC (The Focal Point) */}
+          <div className="flex-1 flex justify-center relative py-10 lg:py-0">
+            {/* Halo Effect yang lebih halus */}
+            <div className="absolute inset-0 m-auto w-40 h-40 bg-primary-1/10 blur-[100px] rounded-full" />
             
-            <p className="text-slate-500 dark:text-slate-400 text-lg font-medium leading-relaxed">
-              Pilih kategori materi yang ingin kamu pelajari dan mulai tingkatkan skill kamu dengan kurikulum terbaik.
-            </p>
-          </FadeInItem>
+            <motion.div 
+              animate={{ 
+                y: [0, -15, 0],
+                rotate: [-1, 1, -1]
+              }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative z-10"
+            >
+              <img 
+                src="/assets/animation/icon/a1.png" 
+                alt="iconic" 
+                className="w-48 md:w-72 h-auto drop-shadow-[0_20px_50px_rgba(var(--primary-1-rgb),0.3)]" 
+              />
+            </motion.div>
+          </div>
 
-          {/* Stats Singkat */}
-          <FadeInItem className="hidden lg:flex items-center gap-6 p-2 bg-white dark:bg-dark-bg2 rounded-[2rem] border border-slate-100 dark:border-white/5 shadow-xl shadow-slate-200/50 dark:shadow-none">
-            <div className="pl-6 py-2">
-              <div className="text-2xl font-black text-primary-2 dark:text-white leading-none">{categories.length}</div>
-              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Kategori</div>
-            </div>
-            <div className="h-10 w-[1px] bg-slate-100 dark:bg-white/10" />
-            <button className="bg-primary-1 hover:bg-primary-1/90 text-white p-4 rounded-2xl transition-all shadow-lg shadow-primary-1/20 group">
-              <BookOpen size={20} className="group-hover:scale-110 transition-transform" />
-            </button>
-          </FadeInItem>
-        </header>
+          {/* SISI KANAN: STATS & ACTION (Clean Minimalism) */}
+          <div className=" hidden md:flex flex-1 flex-col items-center lg:items-end space-y-8">
+            <FadeInItem className="w-full max-w-[260px]">
+              <div className="p-1 bg-slate-100 dark:bg-white/5 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-white/10 shadow-inner">
+                <div className="bg-white dark:bg-dark-bg2 p-7 rounded-[1.8rem] shadow-sm">
+                  <div className="flex items-center gap-4 mb-4">
+                      <div className="h-12 w-12 flex items-center justify-center bg-primary-1 text-white rounded-2xl shadow-lg shadow-primary-1/20">
+                        <LayoutGrid size={24} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Database</p>
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white leading-none">Modules System</h4>
+                      </div>
+                  </div>
+                  
+                  <div className="flex items-end justify-between">
+                      <span className="text-5xl font-black italic tracking-tighter text-slate-900 dark:text-white leading-none">
+                        {categories.length}
+                      </span>
+                      <span className="text-[10px] font-black uppercase text-primary-1 bg-primary-1/10 px-2 py-1 rounded-md mb-1">
+                        Verified
+                      </span>
+                  </div>
+                </div>
+              </div>
+            </FadeInItem>
 
-        {/* Grid Categories */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <FadeInItem>
+              <div className="flex items-center gap-3 text-slate-400 text-[11px] font-bold uppercase tracking-[0.3em]">
+                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                Next.js Optimized
+              </div>
+            </FadeInItem>
+          </div>
+
+        </div>
+
+        {/* GRID SECTION */}
+        <motion.div 
+          variants={{
+            visible: { transition: { staggerChildren: 0.1 } }
+          }}
+          className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3 relative z-10 pt-12 border-t border-slate-100 dark:border-white/5"
+        >
           {categories.map((cat) => (
             <FadeInItem key={cat._id}>
               <CategoryCard 
@@ -89,17 +147,11 @@ export default function CategoryPage() {
               />
             </FadeInItem>
           ))}
-        </div>
-
-        {/* Empty State */}
-        {categories.length === 0 && (
-          <FadeInItem className="bg-bg2 dark:bg-dark-bg2 rounded-[3rem] p-20 text-center border-2 border-dashed border-slate-100 dark:border-white/5">
-             <LayoutGrid className="mx-auto text-slate-300 mb-4" size={48} />
-             <p className="text-slate-400 font-bold tracking-tight uppercase text-sm">Belum ada kategori tersedia.</p>
-          </FadeInItem>
-        )}
+        </motion.div>
 
       </FadeInContainer>
+
+
     </div>
   );
 }
