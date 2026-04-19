@@ -22,6 +22,7 @@ import { FadeInContainer, FadeInItem, ScaleIn, BlurIn } from '@/components/anima
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { MainLoading } from '@/components/modals/MainLoading';
 import { MainEmpty } from '@/components/modals/MainEmpty';
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function CatalogDetailPage() {
   const params = useParams();
@@ -149,7 +150,7 @@ export default function CatalogDetailPage() {
                   <FadeInItem>
                     {/* Deskripsi sebaiknya lebih kecil dari judul agar hirarki visualnya bagus */}
                     <p className="text-base lg:text-xl text-slate-500 dark:text-slate-400 leading-relaxed max-w-xl font-medium mt-4">
-                      {catalog.description || "Mastering the craft with our expert-led curriculum designed for the next generation of leaders."}
+                      <RichTextDisplay content={catalog.description || "Mastering the craft with our expert-led curriculum designed for the next generation of leaders."} />
                     </p>
                   </FadeInItem>
 

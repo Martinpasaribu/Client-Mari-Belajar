@@ -6,7 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   X, LogOut, ChevronRight, LayoutDashboard, 
   BookOpen, History, User, CreditCard, 
-  Settings, Info, ShieldCheck, FileText
+  Settings, Info, ShieldCheck, FileText,
+  Pyramid,
+  AlignEndVertical
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // <--- 1. WAJIB IMPORT INI
@@ -109,7 +111,9 @@ export default function MobileMenu({
                 <div>
                   <p className="px-4 text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-3">Informasi</p>
                   <div className="space-y-1">
-                    <MobileNavLink icon={<Info size={18}/>} href="/about" label="Tentang Kami" active={pathname === "/about"} onClick={onClose} />
+                    <MobileNavLink icon={<LayoutDashboard size={18}/>} href="/" label="Halaman Utama" active={pathname === "/"} onClick={onClose} />
+                    <MobileNavLink icon={<AlignEndVertical size={18}/>} href="/category" label="Kategori" active={pathname === "/category"} onClick={onClose} />
+                    <MobileNavLink icon={<Pyramid size={18}/>} href="/about" label="Tentang Kami" active={pathname === "/about"} onClick={onClose} />
                     <MobileNavLink icon={<ShieldCheck size={18}/>} href="/privacy-policy" label="Privasi" active={pathname === "/privacy-policy"} onClick={onClose} />
                     <MobileNavLink icon={<FileText size={18}/>} href="/terms-conditions" label="Syarat & Ketentuan" active={pathname === "/terms-conditions"} onClick={onClose} />
                   </div>
@@ -117,41 +121,41 @@ export default function MobileMenu({
               </nav>
             </div>
 
-<div className="p-2 px-3 bg-transparent">
-  {/* Row Pengaturan: Theme, Language, & Logout dalam satu baris */}
-  <div className="flex items-center   gap-2">
-    
-    {/* Theme Switcher */}
-    <button 
-      onClick={toggleTheme} 
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100/50 text-slate-600 transition-all hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10"
-      title={`Mode ${theme}`}
-    >
-      {themeIcon}
-    </button>
-    
-    {/* Logout Button - Minimalis & Sejajar */}
-    {user && (
-      <button
-        onClick={() => { handleLogout(); onClose(); }}
-        className="group flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-4 bg-slate-100/50 dark:bg-white/5 text-slate-400 transition-all hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
-        title="Sign Out"
-      >
-        <LogOut size={16} className="transition-transform group-hover:scale-110" />
-        {/* Teks Sign Out disembunyikan di layar sangat kecil agar tidak berantakan */}
-        <span className="hidden md:block text-[10px] font-black uppercase tracking-widest">Out</span>
-      </button>
-    )}
+            <div className="p-2 px-3 bg-transparent">
+              {/* Row Pengaturan: Theme, Language, & Logout dalam satu baris */}
+              <div className="flex items-center   gap-2">
+                
+                {/* Theme Switcher */}
+                <button 
+                  onClick={toggleTheme} 
+                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100/50 text-slate-600 transition-all hover:bg-slate-200 dark:bg-white/5 dark:text-slate-400 dark:hover:bg-white/10"
+                  title={`Mode ${theme}`}
+                >
+                  {themeIcon}
+                </button>
+                
+                {/* Logout Button - Minimalis & Sejajar */}
+                {user && (
+                  <button
+                    onClick={() => { handleLogout(); onClose(); }}
+                    className="group flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-4 bg-slate-100/50 dark:bg-white/5 text-slate-400 transition-all hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                    title="Sign Out"
+                  >
+                    <LogOut size={16} className="transition-transform group-hover:scale-110" />
+                    {/* Teks Sign Out disembunyikan di layar sangat kecil agar tidak berantakan */}
+                    <span className="hidden md:block text-[10px] font-black uppercase tracking-widest">Out</span>
+                  </button>
+                )}
 
-    {/* Language Switcher - Mengambil sisa ruang yang ada */}
-    <div className="flex w-full items-end justify-end min-w-[100px] h-full rounded-xl  dark:bg-white/5">
-      <LanguageSwitcher />
-    </div>
+                {/* Language Switcher - Mengambil sisa ruang yang ada */}
+                <div className="flex w-full items-end justify-end min-w-[100px] h-full rounded-xl ">
+                  <LanguageSwitcher />
+                </div>
 
 
-  </div>
+              </div>
 
-</div>
+            </div>
 
           </motion.div>
         </>

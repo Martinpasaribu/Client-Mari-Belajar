@@ -1,6 +1,6 @@
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
-import { AlertCircle, X, ShieldAlert } from "lucide-react";
+import { AlertCircle, X, ShieldAlert, ThumbsUp } from "lucide-react";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -38,10 +38,10 @@ export function ConfirmModal({ isOpen, onClose, onConfirm, title, description, i
 
             <div className="flex flex-col items-center text-center">
               <div className="w-20 h-20 bg-primary-1/10 text-primary-1 rounded-3xl flex items-center justify-center mb-8 rotate-0">
-                <ShieldAlert size={40} />
+                <ThumbsUp size={40} />
               </div>
               
-              <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-4 italic">
+              <h3 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tighter mb-4 ">
                 {title}
               </h3>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-bold leading-relaxed mb-10 px-4">

@@ -8,6 +8,7 @@ import { ChevronRight, Book, ArrowLeft, LayoutGrid, Info, Loader2, Sparkles, Tex
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import { MainLoading } from "@/components/modals/MainLoading";
 import { MainEmpty } from "@/components/modals/MainEmpty";
+import RichTextDisplay from "@/components/display/RichTextDisplay";
 
 export default function BabListPage() {
   const { id } = useParams();
@@ -79,7 +80,8 @@ export default function BabListPage() {
                   {moduleData.sub_category?.name}
                 </h1>
                 <p className="max-w-xl text-lg font-medium leading-relaxed text-slate-400">
-                  {moduleData.sub_category?.description || `Kuasai materi ${moduleData.sub_category?.name} secara mendalam dengan latihan soal terstruktur.`}
+                  <RichTextDisplay content={moduleData.sub_category?.description || `Kuasai materi`} />
+                  {moduleData.sub_category?.name} secara mendalam dengan latihan soal terstruktur.`
                 </p>
               </div>
 
@@ -121,7 +123,7 @@ export default function BabListPage() {
                     <span className="text-sm font-black italic">0{index + 1}</span>
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 group-hover:text-primary-1 transition-colors leading-tight">
+                    <h3 className="text-md md:text-lg font-black text-slate-800 dark:text-slate-100 group-hover:text-primary-1 transition-colors leading-tight">
                       {bab.name}
                     </h3>
                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Latihan Soal & Pembahasan</p>

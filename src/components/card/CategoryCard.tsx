@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowRight, BookOpen, Layers } from 'lucide-react';
 import { motion } from 'framer-motion';
+import RichTextDisplay from '../display/RichTextDisplay';
 
 interface CategoryCardProps {
   category: any;
@@ -28,7 +29,7 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
         />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col p-8">
+      <div className="relative z-10 flex h-full flex-col p-5 md:p-8">
         
         {/* Header Section */}
         <header className="flex items-start justify-between">
@@ -52,14 +53,14 @@ export const CategoryCard = ({ category, onClick }: CategoryCardProps) => {
         <div className="mt-5 md:mt-12 flex-1">
           <div className="space-y-1 mb-3">
              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary-1 group-hover:text-white/60 transition-colors">
-               Module
+               Kategori 
              </span>
              <h3 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white transition-colors duration-500 group-hover:text-white uppercase leading-none">
                {category.name}
              </h3>
           </div>
           <p className="line-clamp-3 text-sm font-medium leading-relaxed text-slate-500 transition-colors duration-500 group-hover:text-white/90">
-            {category.sub_description || `Eksplorasi materi ${category.name} secara mendalam dengan standar kurikulum terbaru.`}
+            <RichTextDisplay content={category.sub_description || `Eksplorasi materi ${category.name} secara mendalam dengan standar kurikulum terbaru.`} />
           </p>
         </div>
 

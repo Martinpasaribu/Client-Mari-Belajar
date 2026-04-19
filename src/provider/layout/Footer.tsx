@@ -1,7 +1,19 @@
 import Link from "next/link";
 import AppIcon from "../tools/AppIcon";
+import { useRouter, usePathname } from "next/navigation"; 
+
 
 export default function Footer() {
+
+  const pathname = usePathname(); 
+
+    // --- LOGIKA PENYEMBUNYIAN (EARLY RETURN) ---
+  // Diletakkan setelah semua Hooks dipanggil untuk menghindari error "Rendered fewer hooks"
+  if (pathname?.includes("/attempt")) {
+    return null;
+  }
+
+
   return (
     <footer className="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 py-12 transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-12">

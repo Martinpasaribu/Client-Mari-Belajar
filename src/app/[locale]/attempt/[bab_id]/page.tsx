@@ -20,7 +20,8 @@ import {
   ArrowRight,
   BookOpen,
   LayoutGrid,
-  Construction
+  Construction,
+  HelpCircle
 } from 'lucide-react';
 import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
 import { ConfirmModal } from '@/components/modals/ConfirmModal';
@@ -31,6 +32,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { ActiveAttemptModal } from '@/components/modals/ActiveAttemptModal';
 import { motion } from 'framer-motion';
 import RichTextDisplay from '@/components/display/RichTextDisplay';
+import { useQuestionShare } from '@/hooks/useHelpQuestions';
 
 export default function QuizAttemptPage() {
   const router = useRouter();
@@ -58,6 +60,29 @@ export default function QuizAttemptPage() {
 });
 
 const [isGridOpen, setIsGridOpen] = useState(false);
+
+const [viewMode, setViewMode] = useState<'single' | 'list'>('single');
+const { shareQuestion } = useQuestionShare();
+
+
+const handleAskHelp = async () => {
+  const res = await shareQuestion(
+    currentQuestion._id, 
+    currentQuestion.question_text
+  );
+  
+  if (res.method === 'copy') {
+    showToast("success", "Link soal berhasil disalin!");
+  }
+};
+
+// Fungsi pembantu untuk scroll ke soal tertentu saat pindah ke mode list
+const scrollToQuestion = (idx: number) => {
+  const element = document.getElementById(`question-${idx}`);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
 
   useEffect(() => {
     answersRef.current = userAnswers;
@@ -214,6 +239,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
     const s = seconds % 60;
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   };
+
 
   // --- RENDER MEDIA CONTENT (Tipe 4 & 5) ---
   const renderMediaContent = (q: any) => {
@@ -382,7 +408,7 @@ const [isGridOpen, setIsGridOpen] = useState(false);
             </div>
 
             {/* Content */}
-            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 italic uppercase tracking-tight">
+            <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4  uppercase tracking-tight">
               Oops! <span className="text-amber-500 text-2xl block mt-1">Soal Belum Tersedia</span>
             </h2>
             
@@ -430,8 +456,26 @@ const [isGridOpen, setIsGridOpen] = useState(false);
         <header className="sticky top-0 z-40 w-full border-b border-slate-200/50 dark:border-white/5 bg-white/80 dark:bg-[#080B14]/80 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 md:h-20 flex items-center justify-between">
             
+            {/* Tombol View Mode Switcher */}
+            <div className="flex bg-slate-100 dark:bg-white/5 p-1 rounded-xl border border-slate-200 dark:border-white/10">
+              <button 
+                onClick={() => setViewMode('single')}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'single' ? 'bg-white dark:bg-slate-800 shadow-sm text-primary-1' : 'text-slate-400'}`}
+                title="Satu per satu"
+              >
+                <LayoutGrid size={15} />
+              </button>
+              <button 
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-800 shadow-sm text-primary-1' : 'text-slate-400'}`}
+                title="Semua Soal"
+              >
+                <ArrowRight size={15} className="rotate-90" />
+              </button>
+            </div>
+
             {/* Progress Ring */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-[5rem]">
               <div className="relative flex items-center justify-center w-9 h-9 md:w-11 md:h-11">
                 <svg className="w-full h-full transform -rotate-90">
                   <circle cx="50%" cy="50%" r="16" stroke="currentColor" strokeWidth="3" fill="transparent" className="text-slate-100 dark:text-white/5" />
@@ -468,11 +512,13 @@ const [isGridOpen, setIsGridOpen] = useState(false);
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto px-0 md:px-6 py-0 md:py-8 lg:py-12">
+        <main className="max-w-7xl mx-auto px-2 md:px-6 py-4 md:py-8 lg:py-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 md:gap-8">
             
             {/* 2. MAIN CONTENT AREA */}
             <section className="lg:col-span-9">
+              {viewMode === 'single' ? (
+
               <div className="bg-white dark:bg-slate-900/40 md:rounded-[2.5rem] min-h-[calc(100vh-120px)] md:min-h-[600px] flex flex-col border-x md:border border-slate-200/50 dark:border-white/5 shadow-sm overflow-hidden relative">
                 
                 {/* Mobile Header Info */}
@@ -488,10 +534,20 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                 {/* Question Body */}
                 <div className="py-6 select-none px-3 md:p-16 flex-1 overflow-y-auto scrollbar-hide">
                   <div className="max-w-3xl mx-auto">
-                    <div className="flex items-center gap-2 mb-8">
+                    <div className="flex items-center  justify-between gap-2 mb-8">
                         <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 text-[9px] font-black uppercase tracking-widest border border-slate-200/50 dark:border-white/5">
                           {currentQuestion?.type?.replace('_', ' ')}
                         </span>
+
+                        {/* Help Question */}
+                        <button 
+                          onClick={handleAskHelp}
+                          className="flex items-center gap-2 text-slate-400 hover:text-primary-1 transition-colors group"
+                        >
+                          <HelpCircle size={14} className="group-hover:rotate-12 transition-transform" />
+                          <span className="text-[10px] font-black uppercase tracking-widest">Help</span>
+                        </button>
+
                     </div>
                     
                     <div className="text-slate-800 dark:text-slate-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -534,6 +590,60 @@ const [isGridOpen, setIsGridOpen] = useState(false);
                   </div>
                 </div>
               </div>
+
+              ) : (
+                // TAMPILAN LIST (BERDERET KE BAWAH)
+                <div className="space-y-6 pb-10">
+                  {questions.map((q, idx) => (
+                    <div 
+                      key={q._id} 
+                      id={`question-${idx}`}
+                      className={`p-6 md:p-12 bg-white dark:bg-slate-900/40 rounded-[2.5rem] border border-slate-200/50 dark:border-white/5 transition-all ${currentIdx === idx ? 'ring-2 ring-primary-1 ring-offset-4 dark:ring-offset-[#080B14]' : ''}`}
+                      onClick={() => setCurrentIdx(idx)}
+                    >
+                      <div className="max-w-3xl mx-auto">
+                        <div className="flex items-center justify-between gap-3 mb-6">
+                          <span className="w-10 h-10 flex items-center justify-center bg-primary-1 text-white rounded-xl font-black text-sm">
+                            {idx + 1}
+                          </span>
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                            {q.type?.replace('_', ' ')}
+                          </span>
+
+                          {/* Help Question */}
+                          <button 
+                            onClick={handleAskHelp}
+                            className="flex items-center gap-2 text-slate-400 hover:text-primary-1 transition-colors group"
+                          >
+                            <HelpCircle size={14} className="group-hover:rotate-12 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-widest">Help</span>
+                          </button>
+
+                        </div>
+                        
+                        {/* Paksa render options & media dengan fungsi yang sudah ada */}
+                        {renderMediaContent(q)}
+                        <div className="mt-8 space-y-4">
+                          {/* Note: renderAnswerOptions kamu sudah menggunakan currentIdx secara internal, 
+                              sebaiknya modifikasi handleSelectOption agar menerima ID soal langsung */}
+                          {renderAnswerOptions(q)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Tombol Submit Tambahan di paling bawah */}
+                  <div className="flex justify-center pt-10">
+                    <button 
+                      onClick={() => setShowConfirm(true)}
+                      className="px-10 py-5 bg-primary-1 text-white rounded-[2rem] font-black uppercase tracking-widest shadow-2xl shadow-primary-1/30 hover:scale-105 transition-all"
+                    >
+                      Selesaikan Semua Soal
+                    </button>
+                  </div>
+                </div>
+              )}
+  
             </section>
 
             {/* 4. SIDEBAR - Desktop Grid */}

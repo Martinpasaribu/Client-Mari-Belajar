@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useParams, useRouter } from "next/navigation"; // Gunakan navigation
-import { Play, Trophy, Calendar, Clock, ChevronRight, Loader2, Info, Target, Zap, Clock2Icon, TimerIcon } from "lucide-react";
+import { Play, Trophy, Calendar, Clock, ChevronRight, Loader2, Info, Target, Zap, Clock2Icon, TimerIcon, FileClock } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
@@ -95,17 +95,17 @@ export default function AttemptsPage() {
 
       {/* STATISTIK & RIWAYAT */}
       <div className="max-w-6xl mx-auto space-y-6">
-        <FadeInItem className="flex items-center justify-between px-4">
+        <FadeInItem className="flex items-center flex-col md:flex-row justify-between px-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-amber-500/10 rounded-lg">
-              <Trophy size={18} className="text-amber-500" />
+              <FileClock size={18} className="text-amber-500" />
             </div>
             <h3 className="text-lg font-black uppercase tracking-tighter text-slate-800 dark:text-white">
               Riwayat Pengerjaan
             </h3>
           </div>
           <span className="text-[10px] font-black text-slate-400 bg-slate-100 dark:bg-white/5 px-4 py-1.5 rounded-full uppercase tracking-widest border border-slate-200 dark:border-white/5">
-            {data.results.length} Sesi Terdeteksi
+            {data.results.length} Sesi Tersedia
           </span>
         </FadeInItem>
 
@@ -130,17 +130,17 @@ export default function AttemptsPage() {
                   <div className="group bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/5 p-6 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-primary-1 hover:shadow-2xl hover:shadow-primary-1/5 transition-all duration-300">
                     <div className="flex items-center gap-6 w-full md:w-auto">
                       {/* Skor Badge */}
-                      <div className={`w-20 h-20 rounded-3xl flex flex-col items-center justify-center transition-transform group-hover:scale-110 duration-500 ${
+                      <div className={`w-12 h-12 md:w-20 md:h-20 rounded-xl md:rounded-3xl flex flex-col items-center justify-center transition-transform group-hover:scale-110 duration-500 ${
                         isExcellent ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 
                         isGood ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 
                         'bg-slate-800 text-white'
                       }`}>
-                        <span className="text-2xl font-black leading-none">{item.total_score}</span>
+                        <span className="text-md md:text-2xl font-black leading-none">{item.total_score}</span>
                         <span className="text-[8px] font-black uppercase tracking-widest mt-1 opacity-80">Skor</span>
                       </div>
 
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
+                      <div className="space-y-2 w-full">
+                        <div className="flex items-center justify-between gap-3">
                           <p className="font-black text-slate-800 dark:text-white uppercase text-xs tracking-widest">
                             Attempt #{data.results.length - index}
                           </p>
@@ -170,13 +170,17 @@ export default function AttemptsPage() {
                           <p className="text-lg font-black text-rose-500">{item.wrong_count}</p>
                         </div>
                       </div>
-
-                      <Link 
-                        href={`/dashboard/history/result/${item._id}`}
+                      <button
+                        onClick={() => {
+                          const path = item.status === 'submitted' 
+                            ? `/dashboard/history/result/${item._id}` 
+                            : `/attempt/${item.bab_key?._id}`;
+                          router.push(path);
+                        }}
                         className="h-12 w-12 bg-slate-50 dark:bg-white/5 text-slate-400 rounded-2xl flex items-center justify-center group-hover:bg-primary-1 group-hover:text-white group-hover:rotate-[360deg] transition-all duration-700 shadow-sm"
-                      >
+                        >
                         <ChevronRight size={20} />
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </FadeInItem>

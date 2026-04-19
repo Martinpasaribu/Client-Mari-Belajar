@@ -5,13 +5,15 @@ import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { 
   ArrowLeft, Clock, ChevronRight, FileText, Lock, 
-  Trophy, BookOpen, Unlock, Crown, BadgeCheck 
+  Trophy, BookOpen, Unlock, Crown, BadgeCheck, 
+  Users
 } from 'lucide-react';
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import api from '@/lib/axios';
 import { useAuthStore } from '@/store/useAuthStore'; 
 import AuthModal from '@/components/modals/AuthModal';
 import { MainLoading } from '@/components/modals/MainLoading';
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function BabPage() {
   const params = useParams();
@@ -83,11 +85,22 @@ export default function BabPage() {
         {/* Header Section - Better Alignment on Mobile */}
         <FadeInItem className="mb-10 md:mb-16">
           <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6'>
-            <div className="inline-flex w-fit items-center gap-2 rounded-xl bg-primary-1/10 px-3 py-1.5 md:px-4 md:py-2 text-primary-1 font-bold">
-              <BookOpen size={14} />
-              <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Bab Pembelajaran</span>
+            
+            <div className='flex flex-row gap-2'>
+              <div className="inline-flex w-fit items-center gap-2 rounded-xl bg-primary-1/10 px-3 py-1.5 md:px-4 md:py-2 text-primary-1 font-bold">
+                <BookOpen size={14} />
+                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Bab Pembelajaran</span>
+              </div>
+            
+              {/* User Stats Badge */}
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"> 
+                <Users size={12} className="text-slate-400 group-hover:text-primary-1" /> 
+                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                  {data.enrolled_users?.length || 0}
+                </span>
+              </div>
             </div>
-          
+                      
             <div className={`flex items-center gap-2 w-fit px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-sm ${
               data?.sub_category?.isFree ? 'bg-emerald-500/10 text-emerald-600' : 'bg-blue-500/10 text-blue-600'
             }`}>
@@ -101,7 +114,8 @@ export default function BabPage() {
           </h1>
           
           <p className="max-w-2xl text-base md:text-lg font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-            {data?.sub_category?.sub_description || "Selesaikan seluruh rangkaian bab untuk menguasai materi secara tuntas."}
+
+            <RichTextDisplay content={data?.sub_category?.sub_description || "Selesaikan seluruh rangkaian bab untuk menguasai materi secara tuntas."} />
           </p>
         </FadeInItem>
 
@@ -154,7 +168,7 @@ export default function BabPage() {
                       </div>
                       <div className="flex items-center gap-1.5 rounded-full bg-bg2 dark:bg-dark-bg1 px-3 py-1 text-[9px] md:text-[10px] font-bold text-slate-500 group-hover:bg-primary-1/10 transition-colors">
                         <FileText size={12} />
-                        <span>Latihan</span>
+                        <span>{bab.question_keys.length} Soal</span>
                       </div>
                     </div>
                   </div>

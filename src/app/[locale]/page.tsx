@@ -253,7 +253,7 @@ const stats = [
                           <LayoutGrid size={32} strokeWidth={2.5} />
                         </div>
                         <div className="text-right">
-                          <span className="block text-[20px] font-black text-slate-900 dark:text-white leading-none ">0{subCategories.filter((sub: any) => sub.category_key === cat._id).length}</span>
+                          <span className="block text-[20px] font-black text-slate-900 dark:text-white leading-none ">{cat.subCategoryCount}</span>
                           <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Modul</span>
                         </div>
                       </div>
@@ -319,57 +319,57 @@ const stats = [
             </div>
           </FadeInItem>
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-  {isLoading ? (
-    Array(8).fill(0).map((_, i) => (
-      <div key={i} className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-3xl" />
-    ))
-  ) : (
-    subCategories.map((sub: any) => (
-      <FadeInItem key={sub._id}>
-        <div 
-          className="group relative flex flex-col p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary-1/50 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl hover:shadow-primary-1/10 hover:-translate-y-1 overflow-hidden"
-        >
-          {/* Decorative Background Blob on Hover */}
-          <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary-1/5 rounded-full blur-2xl group-hover:bg-primary-1/20 transition-colors" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {isLoading ? (
+              Array(8).fill(0).map((_, i) => (
+                <div key={i} className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-3xl" />
+              ))
+            ) : (
+              subCategories.map((sub: any) => (
+                <FadeInItem key={sub._id}>
+                  <div 
+                    className="group relative flex flex-col p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 hover:border-primary-1/50 transition-all duration-300 cursor-pointer shadow-sm hover:shadow-xl hover:shadow-primary-1/10 hover:-translate-y-1 overflow-hidden"
+                  >
+                    {/* Decorative Background Blob on Hover */}
+                    <div className="absolute -right-4 -top-4 w-16 h-16 bg-primary-1/5 rounded-full blur-2xl group-hover:bg-primary-1/20 transition-colors" />
 
-          <div className="flex justify-between items-start mb-4">
-            {/* Icon Placeholder / Category Badge */}
-            <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary-1 group-hover:bg-primary-1 group-hover:text-white transition-colors duration-300">
-              <BookOpen size={20} /> {/* Ganti dengan ikon yang relevan */}
-            </div>
-            
-            {/* User Stats Badge */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"> 
-              <Users size={12} className="text-slate-400 group-hover:text-primary-1" /> 
-              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                {sub.enrolled_users?.length || 0}
-              </span>
-            </div>
-          </div>
+                    <div className="flex justify-between items-start mb-4">
+                      {/* Icon Placeholder / Category Badge */}
+                      <div className="w-10 h-10 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-primary-1 group-hover:bg-primary-1 group-hover:text-white transition-colors duration-300">
+                        <BookOpen size={20} /> {/* Ganti dengan ikon yang relevan */}
+                      </div>
+                      
+                      {/* User Stats Badge */}
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"> 
+                        <Users size={12} className="text-slate-400 group-hover:text-primary-1" /> 
+                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                          {sub.enrolled_users?.length || 0}
+                        </span>
+                      </div>
+                    </div>
 
-          <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase tracking-widest text-primary-1 opacity-80">
-              Materi Modul
-            </p>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base leading-snug group-hover:text-primary-1 transition-colors">
-              {sub.name}
-            </h3>
-          </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary-1 opacity-80">
+                        Materi Modul
+                      </p>
+                      <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base leading-snug group-hover:text-primary-1 transition-colors">
+                        {sub.name}
+                      </h3>
+                    </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-              Lihat Detail
-            </span>
-            <div className="p-1.5 rounded-lg bg-primary-1/10 text-primary-1 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-              <ArrowRight size={16} strokeWidth={3} />
-            </div>
+                    <div className="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                      <span className="text-xs font-medium text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                        Lihat Detail
+                      </span>
+                      <div className="p-1.5 rounded-lg bg-primary-1/10 text-primary-1 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                        <ArrowRight size={16} strokeWidth={3} />
+                      </div>
+                    </div>
+                  </div>
+                </FadeInItem>
+              ))
+            )}
           </div>
-        </div>
-      </FadeInItem>
-    ))
-  )}
-</div>
 
         </FadeInContainer>
       </section>

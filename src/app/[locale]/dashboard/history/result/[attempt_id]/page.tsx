@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -19,16 +21,25 @@ import {
   Frown,
   ThumbsUp,
   Star,
-  LayoutGrid
+  LayoutGrid,
+  HelpCircle,
+  X,
+  Check,
+  Award,
+  Share2,
+  Brain
 } from 'lucide-react';
 import api from '@/lib/axios';
 import { FadeInContainer, FadeInItem, ScaleIn } from "@/components/animations/MotionWrapper";
 import RichTextDisplay from '@/components/display/RichTextDisplay';
+import { motion } from 'framer-motion';
+import ShareModal from '@/components/modals/ShareModal';
 
 export default function QuizResultPage() {
   const params = useParams();
   const router = useRouter();
   const attemptId = params.attempt_id;
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -148,12 +159,43 @@ export default function QuizResultPage() {
     </div>
   );
 
-  const { total_score, correct_count, wrong_count, answers, bab_key, duration_seconds } = data;
+  const { total_score, correct_count, wrong_count, answers, bab_key, duration_seconds, section_performance } = data;
   const skipped_count = answers?.filter((a: any) => !a.answer_given || a.answer_given === "").length || 0;
 
   return (
-    <div className="min-h-screen bg-bg1 dark:bg-transparent pb-24 font-sans transition-colors duration-300">
+    <div className="relative min-h-screen bg-bg1 dark:bg-transparent pb-24 font-sans transition-colors duration-300">
       
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="
+          /* Posisi Umum */
+          fixed z-40 flex items-center justify-center gap-2 bg-primary-1 text-white shadow-2xl shadow-primary-1/40 transition-all active:scale-95
+          
+          /* Layout Mobile: Pojok Kiri Bawah */
+          bottom-6 left-6 w-14 h-14 rounded-full
+          
+          /* Layout Desktop (md): Pindah ke Kanan (atau tetap kiri sesuai seleramu) */
+          md:left-auto md:right-10 md:bottom-5 md:w-auto md:h-auto md:px-6 md:py-4 md:rounded-2xl
+        "
+      >
+        <Share2 size={20} className="md:w-4 md:h-4" />  
+        <span className='hidden md:block font-black text-xs uppercase tracking-widest'> 
+          Bagikan Skor 
+        </span>
+      </button>
+
+      {/* Modal */}
+      <ShareModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        data={{
+          attemptId:attemptId,
+          score: total_score,
+          babName: bab_key?.name || 'Materi Latihan',
+          rating: getRating(total_score).label
+        }}
+      />
+
       {/* NAVBAR */}
       <nav className="bg-white/80 dark:bg-dark-bg1/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/5 px-3 md:px-6 py-2 md:py-4 sticky -top-0.5 z-30 rounded-2xl">
         <div className="max-w-5xl mx-auto flex justify-between items-center gap-5">
@@ -164,7 +206,7 @@ export default function QuizResultPage() {
             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Kembali
           </button>
           <div className="text-right">
-             <span className="block text-[8px] font-black text-primary-1 uppercase tracking-widest italic">Completed</span>
+             <span className="block text-[8px] font-black text-primary-1 uppercase tracking-widest ">Completed</span>
              <span className="text-xs font-bold text-slate-800 dark:text-slate-200">{bab_key?.name || bab_key?.title}</span>
           </div>
         </div>
@@ -201,7 +243,7 @@ export default function QuizResultPage() {
                 </svg>
                 
                 <div className="absolute flex flex-col items-center">
-                  <span className="text-7xl font-black text-slate-900 dark:text-white tracking-tighter italic drop-shadow-sm leading-none">
+                  <span className="text-7xl font-black text-slate-900 dark:text-white tracking-tighter  drop-shadow-sm leading-none">
                     {total_score}
                   </span>
                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3 ml-1">Score</span>
@@ -222,7 +264,7 @@ export default function QuizResultPage() {
                 <span className="text-[9px] font-black uppercase tracking-widest">Performance Review</span>
               </div>
 
-              <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-3 leading-tight uppercase italic tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-3 leading-tight uppercase  tracking-tight">
                 {getRating(total_score || 0).label === "wkwk kenapa salah semua" ? "Aduhh..." : getRating(total_score || 0).label + "!"}
               </h2>
               <p className="text-slate-500 dark:text-slate-400 font-medium mb-10 text-sm md:text-base max-w-md">
@@ -252,9 +294,85 @@ export default function QuizResultPage() {
           </div>
         </ScaleIn>
 
+
+        {/* SECTION PERFORMANCE - EXECUTIVE MINIMALIST */}
+        {section_performance && section_performance.length > 0 && (
+          <ScaleIn className="mb-20">
+            {/* Header Minimalis */}
+            <div className="flex items-baseline gap-3 mb-8 px-2">
+              <h3 className="text-[11px] font-black text-slate-900 dark:text-white uppercase tracking-[0.3em]">
+                Analytics
+              </h3>
+              <div className="h-[1px] flex-1 bg-slate-100 dark:bg-white/5" />
+              <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                Per Category
+              </span>
+            </div>
+            
+            <div className="space-y-2">
+              {section_performance.map((section: any) => {
+                const isMastered = section.score >= 75;
+                const colorClass = isMastered ? 'bg-emerald-500' : section.score >= 50 ? 'bg-amber-500' : 'bg-red-500';
+                const textColor = isMastered ? 'text-emerald-500' : section.score >= 50 ? 'text-amber-500' : 'text-red-500';
+
+                return (
+                  <div 
+                    key={section.section_name}
+                    className="group flex flex-col md:flex-row md:items-center gap-4 bg-white dark:bg-white/[0.02] hover:bg-slate-50 dark:hover:bg-white/[0.04] p-4 md:p-5 rounded-3xl border border-slate-100 dark:border-white/5 transition-all"
+                  >
+                    {/* 1. Nama Kategori & Info Ringkas */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-1.5 h-1.5 rounded-full ${colorClass}`} />
+                        <h4 className="text-sm font-black text-slate-800 dark:text-slate-200 uppercase tracking-tight truncate">
+                          {section.section_name}
+                        </h4>
+                      </div>
+                      <div className="flex items-center gap-3 mt-1 ml-4.5">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase">
+                          {section.correct} / {section.total} Correct
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* 2. Mini Progress Bar (Sangat Hemat Tempat) */}
+                    <div className="flex-[1.5] hidden md:block px-4">
+                      <div className="w-full h-1.5 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          animate={{ width: `${section.score}%` }}
+                          className={`h-full rounded-full ${colorClass}`}
+                        />
+                      </div>
+                    </div>
+
+                    {/* 3. Skor & Status */}
+                    <div className="flex items-center justify-between md:justify-end gap-8 md:min-w-[120px]">
+                      {/* Progress bar muncul di bawah nama kategori saat mobile saja */}
+                      <div className="md:hidden flex-1 h-1 bg-slate-100 dark:bg-white/10 rounded-full overflow-hidden mr-4">
+                        <div className={`h-full ${colorClass}`} style={{ width: `${section.score}%` }} />
+                      </div>
+                      
+                      <div className="flex flex-col items-end">
+                        <span className={`text-xl font-black  leading-none ${textColor}`}>
+                          {section.score}%
+                        </span>
+                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 mt-1">
+                          {isMastered ? 'Mastered' : 'Review'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </ScaleIn>
+        )}
+
+
         {/* REVIEW LIST */}
         <div className="space-y-10">
-          <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] px-4 flex items-center gap-3 italic">
+          <h3 className="text-xs font-black text-slate-400 uppercase tracking-[0.4em] px-4 flex items-center gap-3 ">
             <Target size={18} className="text-primary-1" /> Answer Analysis
           </h3>
 
@@ -268,20 +386,68 @@ export default function QuizResultPage() {
             const isImageOptions = q?.options?.some((opt: any) => opt.image?.url);
 
             return (
-              <FadeInItem key={idx} className="bg-white dark:bg-dark-bg2 rounded-[1rem] md:rounded-[3rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-none">
-                <div className="p-3 lg:p-6 xl:p-8 2xl:p-12">
-                  <div className="flex justify-between items-center mb-8">
-                    <span className="px-5 py-2 bg-slate-50 dark:bg-white/5 rounded-lg md:rounded-2xl text-[10px] font-black text-slate-400 border border-slate-100 dark:border-white/10 uppercase tracking-widest">
-                      Q {idx + 1}
-                    </span>
-                    <StatusBadge isSkipped={isSkipped} isCorrect={isCorrect} />
+              <FadeInItem key={idx} className="bg-white dark:bg-dark-bg2 rounded-[2rem] md:rounded-[3rem] border border-slate-100 dark:border-white/5 overflow-hidden shadow-xl shadow-slate-200/30 dark:shadow-none mb-6">
+                <div className="p-5 md:p-8 lg:p-12">
+                  
+                  {/* HEADER SECTION - FIXED RESPONSIVE */}
+                  <div className="flex sm:items-center justify-between gap-4 mb-8">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-4 py-2 bg-bg2 dark:bg-dark-bg1 rounded-xl md:rounded-2xl text-[10px] font-black text-slate-400 border border-slate-100 dark:border-white/10 uppercase tracking-widest whitespace-nowrap">
+                        Soal {idx + 1}
+                      </span>
+                      
+                      {item.question_key?.section && (
+                        <span className="flex items-center gap-1.5 px-3 py-2 bg-primary-1/10 text-primary-1 rounded-xl md:rounded-2xl text-[9px] font-black uppercase tracking-widest border border-primary-1/20">
+                          <Award size={14}/>
+                          <span className="truncate max-w-[120px] md:max-w-none">
+                            {item.question_key.section.name || 'N/A'}
+                          </span>
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Badge Status (Benar/Salah) */}
+                    <div className="flex justify-end items-center">
+                      {/* TAMPILAN HP: Hanya Icon (Sembunyi di sm ke atas) */}
+                      <div className="block sm:hidden">
+                        {!userAnswer ? (
+                          <div className="p-2 bg-slate-100 rounded-full text-slate-400">
+                            <HelpCircle size={20} />
+                          </div>
+                        ) : isCorrect ? (
+                          <div className="p-2 bg-green-500 rounded-full text-white ">
+                            <Check size={20} strokeWidth={3} />
+                          </div>
+                        ) : (
+                          <div className="p-2 bg-red-500 rounded-full text-white ">
+                            <X size={20} strokeWidth={3} />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* TAMPILAN DESKTOP: Badge Full (Sembunyi di di bawah sm) */}
+                      <div className="hidden sm:block">
+                        <StatusBadge isCorrect={isCorrect} isSkipped={!userAnswer} />
+                      </div>
+                    </div>
                   </div>
 
-                  {renderQuestionMedia(q)}
+                  {/* MEDIA SECTION */}
+                  <div className="mb-6 overflow-hidden rounded-2xl">
+                    {renderQuestionMedia(q)}
+                  </div>
 
-                  <RichTextDisplay content={q?.question_text} />
+                  {/* TEXT SOAL */}
+                  <div className="mb-8 overflow-x-auto">
+                    <RichTextDisplay content={q?.question_text} />
+                  </div>
 
-                  <div className={isImageOptions ? "grid grid-cols-2 md:grid-cols-5 gap-4" : "grid grid-cols-1 gap-4"}>
+                  {/* OPTIONS GRID - RESPONSIVE COLUMNS */}
+                  <div className={
+                    isImageOptions 
+                      ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4" 
+                      : "grid grid-cols-1 gap-3 md:gap-4"
+                  }>
                     {q?.options?.map((opt: any) => (
                       <OptionReview 
                         key={opt.label} 
@@ -293,13 +459,14 @@ export default function QuizResultPage() {
                     ))}
                   </div>
 
+                  {/* DISCUSSION SECTION - RESPONSIVE PADDING */}
                   {q?.discussion_text && (
-                    <div className="mt-12 pt-10 border-t border-slate-100 dark:border-white/5">
-                      <div className="flex items-center gap-3 text-primary-1 mb-4">
-                        <Info size={18} />
+                    <div className="mt-8 md:mt-12 pt-8 md:pt-10 border-t border-slate-100 dark:border-white/5">
+                      <div className="flex items-center gap-3 text-primary-1 mb-4 md:mb-6">
+                        <Brain size={18} />
                         <span className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-400">Discussion</span>
                       </div>
-                      <div className="bg-slate-50 dark:bg-white/5 p-8 rounded-[2rem] text-slate-600 dark:text-slate-400 text-sm leading-relaxed italic border-l-4 border-primary-1">
+                      <div className="bg-bg2 dark:bg-dark-bg1 p-5 md:p-8 rounded-[1.5rem] md:rounded-[2.5rem] text-slate-600 dark:text-slate-400 text-sm leading-relaxed border-l-4 border-primary-1 font-medium overflow-hidden">
                         <RichTextDisplay content={q?.discussion_text} />
                       </div>
                     </div>
