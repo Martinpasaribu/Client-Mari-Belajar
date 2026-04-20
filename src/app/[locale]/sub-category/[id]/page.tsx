@@ -7,6 +7,7 @@ import { ArrowLeft, Layers, GraduationCap, ChevronRight, LayoutGrid, Info, Crown
 import { FadeInContainer, FadeInItem } from "@/components/animations/MotionWrapper";
 import api from '@/lib/axios';
 import { MainLoading } from '@/components/modals/MainLoading';
+import RichTextDisplay from '@/components/display/RichTextDisplay';
 
 export default function SubCategoryPage() {
   const params = useParams();
@@ -79,8 +80,8 @@ export default function SubCategoryPage() {
               <h1 className="mb-6 text-4xl font-black tracking-tighter text-white md:text-6xl uppercase">
                 {data.name}
               </h1>
-              <p className="max-w-xl text-lg font-medium leading-relaxed text-slate-300">
-                {data.description || `Kuasai materi ${data.name} secara mendalam dengan kurikulum terstandarisasi.`}
+              <p className="max-w-xl text-md font-medium leading-relaxed text-white">
+                <RichTextDisplay content={data.description_base || `Kuasai materi ${data.name} secara mendalam dengan kurikulum terstandarisasi.`}/>
               </p>
             </FadeInItem>
 
@@ -133,7 +134,7 @@ export default function SubCategoryPage() {
                     <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
                       <GraduationCap className="text-primary-1 w-4 h-4" />
                       <span className="text-[10px] md:text-xs font-bold tracking-wide line-clamp-1">
-                        {sub.sub_description || "Jelajahi materi pembelajaran lengkap di kategori ini."}
+                          <RichTextDisplay content={sub.sub_description || "Jelajahi materi pembelajaran lengkap di kategori ini."} />
                       </span>
                     </div>
                   </div>

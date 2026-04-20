@@ -76,7 +76,7 @@ export default function MobileMenu({
                       ) : user.firstname?.charAt(0)}
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-800 dark:text-white uppercase italic leading-tight">
+                      <h4 className="font-black text-slate-800 dark:text-white uppercase  leading-tight">
                         {user.firstname} {user.lastname}
                       </h4>
                       <p className="text-[10px] font-bold text-primary-1 uppercase tracking-widest mt-1">

@@ -81,42 +81,55 @@ export default function BabPage() {
         </div>
       </nav>
 
-      <FadeInContainer className="mx-auto max-w-4xl px-4 md:px-6 py-8 md:py-12">
+      <FadeInContainer className="mx-auto max-w-4xl px-4 md:px-6 py-6 md:py-12">
         {/* Header Section - Better Alignment on Mobile */}
+
         <FadeInItem className="mb-10 md:mb-16">
-          <div className='flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6'>
+          {/* TOP HEADER: Stack on mobile, Side-by-side on desktop */}
+          <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8'>
             
-            <div className='flex flex-row gap-2'>
-              <div className="inline-flex w-fit items-center gap-2 rounded-xl bg-primary-1/10 px-3 py-1.5 md:px-4 md:py-2 text-primary-1 font-bold">
-                <BookOpen size={14} />
-                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em]">Bab Pembelajaran</span>
+            {/* SISI KIRI: Badges Group */}
+            <div className='flex flex-wrap items-center gap-2'>
+              {/* Bab Badge */}
+              <div className="inline-flex items-center gap-2 rounded-xl bg-primary-1/10 px-3 py-2 md:px-4 text-primary-1 font-bold border border-primary-1/10 shadow-sm">
+                <BookOpen size={14} className="shrink-0" />
+                <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] whitespace-nowrap">
+                  Bab Pembelajaran
+                </span>
               </div>
-            
+
               {/* User Stats Badge */}
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700"> 
-                <Users size={12} className="text-slate-400 group-hover:text-primary-1" /> 
-                <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm"> 
+                <Users size={12} className="text-slate-400" /> 
+                <span className="text-[10px] font-black text-slate-500 dark:text-slate-400">
                   {data.enrolled_users?.length || 0}
                 </span>
               </div>
             </div>
-                      
-            <div className={`flex items-center gap-2 w-fit px-3 py-1.5 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] shadow-sm ${
-              data?.sub_category?.isFree ? 'bg-emerald-500/10 text-emerald-600' : 'bg-blue-500/10 text-blue-600'
+
+            {/* SISI KANAN: Pricing Status (Terpisah dari div kiri) */}
+            <div className={`flex items-center gap-2 w-full md:w-fit justify-center md:justify-start px-4 py-2 rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] border shadow-sm transition-all duration-300 ${
+              data?.sub_category?.isFree 
+                ? 'bg-emerald-500/5 text-emerald-600 border-emerald-500/20' 
+                : 'bg-blue-500/5 text-blue-600 border-blue-500/20'
             }`}>
-              {data?.sub_category?.isFree ? <BadgeCheck size={14}/> : <Crown size={14}/>}
-              <span>{data?.sub_category?.isFree ? 'Freemium Package' : 'Premium Package'}</span>
+              {data?.sub_category?.isFree ? <BadgeCheck size={14} className="shrink-0"/> : <Crown size={14} className="shrink-0"/>}
+              <span className="whitespace-nowrap">
+                {data?.sub_category?.isFree ? 'Freemium Package' : 'Premium Package'}
+              </span>
             </div>
           </div>
 
-          <h1 className="text-2xl md:text-5xl font-black tracking-tighter text-dark-primary-2 dark:text-white mb-4 md:mb-6 uppercase leading-[0.9] break-words">
-             {data?.sub_category?.name || "Materi Belajar"}
-          </h1>
-          
-          <p className="max-w-2xl text-base md:text-lg font-medium leading-relaxed text-slate-500 dark:text-slate-400">
-
-            <RichTextDisplay content={data?.sub_category?.sub_description || "Selesaikan seluruh rangkaian bab untuk menguasai materi secara tuntas."} />
-          </p>
+          {/* TITLE SECTION: Responsif Font & Break Word */}
+          <div className="max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter text-slate-900 dark:text-white mb-4 md:mb-6 uppercase leading-[0.9]  break-words">
+              {data?.sub_category?.name || "Materi Belajar"}
+            </h1>
+            
+            <div className="max-w-2xl text-sm md:text-lg font-medium leading-relaxed text-slate-500 dark:text-slate-400">
+              <RichTextDisplay content={data?.sub_category?.sub_description || "Selesaikan seluruh rangkaian bab untuk menguasai materi secara tuntas."} />
+            </div>
+          </div>
         </FadeInItem>
 
         {/* Lessons List - Vertical line hidden on tiny screens */}
